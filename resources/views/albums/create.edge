@@ -1,0 +1,17 @@
+@layout('layout')
+
+@section('content')
+  <h4 class="title">Create album</h4>
+  <form
+    method="POST"
+    action="{{ route('albums.store') }}"
+  >
+    <label for="title">
+      Title
+    </label>
+    <input
+      type="text"
+      name="title"
+    />
+  </form>
+@endsection

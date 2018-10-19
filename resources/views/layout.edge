@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>nudedisco</title>
+  {{ style('https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css') }}
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1 class="title">nudedisco</h1>
+      <p class="subtitle is-5">A simple music library manager.<p>
+    </div>
+  </header>
+  <div class="container">
+    <div class="columns">
+      <div class="column is-one-third-tablet">
+        @include('menu')
+      </div>
+      <div class="column">
+        <section class="section">
+          @!section('content')
+        </section>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
