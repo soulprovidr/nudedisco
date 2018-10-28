@@ -1,7 +1,16 @@
 @layout('layout')
 
+@section('breadcrumbs')
+  @super
+  <li class="{{ url == route('albums.index') ? 'is-active' : '' }}">
+    <a href="{{ route('albums.index') }}">
+      Albums
+    </a>
+  </li>
+@endsection
+
 @section('content')
-  <div class="logo"></div>
-  <div class="title"></div>
-  <div class="subtitle"><p>This is the albums list.</p></div>
+  @each(album in albums)
+    <p>{{ album.title }}</p>
+  @endeach
 @endsection

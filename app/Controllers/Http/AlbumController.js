@@ -1,5 +1,8 @@
 'use strict'
 
+const Album = use('App/Models/Album');
+const Format = use('App/Models/Format');
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -18,7 +21,11 @@ class AlbumController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
-    return view.render('albums.index');
+    const albums = await Album.all();
+    const data = {
+      albums: albums.toJSON()
+    };
+    return view.render('albums.index', data);
   }
 
   /**
@@ -31,7 +38,11 @@ class AlbumController {
    * @param {View} ctx.view
    */
   async create ({ request, response, view }) {
-    return view.render('albums.create');
+    const formats = await Format.all();
+    const data = {
+      formats: formats.toJSON()
+    };
+    return view.render('albums.create', data);
   }
 
   /**
@@ -43,6 +54,12 @@ class AlbumController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
+    const body = request.post();
+    console.log(body);
+    const album = new Album();
+    album.fill(body);
+    await album.save();
+    response.redirect('albums.index');
   }
 
   /**

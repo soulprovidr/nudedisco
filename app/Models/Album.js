@@ -7,6 +7,10 @@ class Album extends Model {
   artist () {
     return this.belongsTo('App/Model/Artist')
   }
+
+  formats () {
+    return this.hasMany('App/Model/Format')
+  }
 }
 
 module.exports = Album

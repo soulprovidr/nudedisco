@@ -10,7 +10,6 @@ class AlbumsSchema extends Schema {
       table.timestamps()
       table.string('title')
       table.integer('year')
-      table.integer('artist_id').references('id').inTable('artists')
     })
   }
 

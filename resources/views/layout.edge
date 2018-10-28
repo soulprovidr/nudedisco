@@ -7,23 +7,45 @@
   {{ style('https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css') }}
 </head>
 <body>
-  <header class="header">
+  <section class="section">
     <div class="container">
-      <h1 class="title">nudedisco</h1>
-      <p class="subtitle is-5">A simple music library manager.<p>
-    </div>
-  </header>
-  <div class="container">
-    <div class="columns">
-      <div class="column is-one-third-tablet">
-        @include('menu')
-      </div>
-      <div class="column">
-        <section class="section">
+
+      <header class="header">
+        <h1 class="title is-4">nudedisco</h1>
+        <p class="subtitle is-6">A simple music library manager.<p>
+      </header>
+  
+      <nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
+        <ul>
+          <li class="{{ url == route('/') ? 'is-active' : '' }}">
+            <a href="{{ route('/') }}">
+              Home
+            </a>
+          </li>
+          @!section('breadcrumbs')
+        </ul>
+      </nav>
+  
+      <div class="columns">
+        <div class="column is-one-third-tablet">
+          @include('menu')
+        </div>
+        <div class="column">
           @!section('content')
-        </section>
+        </div>
       </div>
+
     </div>
-  </div>
+  </section>
+
+  <script type="text/javascript">
+    window.__data__ =
+    @section('data')
+      {}
+    @endsection
+  </script>
+
+  @!section('script')
+
 </body>
 </html>
