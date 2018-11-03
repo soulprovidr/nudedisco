@@ -1,7 +1,6 @@
 'use strict'
 
 const Album = use('App/Models/Album');
-const Format = use('App/Models/Format');
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -22,27 +21,7 @@ class AlbumController {
    */
   async index ({ request, response, view }) {
     const albums = await Album.all();
-    const data = {
-      albums: albums.toJSON()
-    };
-    return view.render('albums.index', data);
-  }
-
-  /**
-   * Render a form to be used for creating a new album.
-   * GET albums/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-    const formats = await Format.all();
-    const data = {
-      formats: formats.toJSON()
-    };
-    return view.render('albums.create', data);
+    return albums.toJSON();
   }
 
   /**
@@ -55,11 +34,10 @@ class AlbumController {
    */
   async store ({ request, response }) {
     const body = request.post();
-    console.log(body);
     const album = new Album();
     album.fill(body);
     await album.save();
-    response.redirect('albums.index');
+    return album.toJSON();
   }
 
   /**
@@ -72,18 +50,6 @@ class AlbumController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing album.
-   * GET albums/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
   }
 
   /**

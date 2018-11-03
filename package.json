@@ -6,13 +6,9 @@
   "main": "index.js",
   "scripts": {
     "develop": "webpack",
-    "start": "node server.js",
+    "start": "adonis serve --dev",
     "test": "node ace test"
   },
-  "keywords": [
-    "adonisjs",
-    "adonis-app"
-  ],
   "author": "",
   "license": "UNLICENSED",
   "private": true,

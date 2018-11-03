@@ -1,7 +1,7 @@
 module.exports = {
   watch: true,
   entry: {
-    'albums.create': './resources/scripts/albums/create.js'
+    'AlbumCreateForm': './resources/components/AlbumCreateForm.js'
   },
   output: {
     filename: '[name].js',
