@@ -17,3 +17,5 @@
 const Route = use('Route')
 
 Route.resource('albums', 'AlbumController').apiOnly();
+Route.resource('artists', 'ArtistController').apiOnly();
+Route.resource('formats', 'AlbumFormatController').apiOnly();

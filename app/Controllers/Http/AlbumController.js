@@ -1,10 +1,21 @@
 'use strict'
 
 const Album = use('App/Models/Album');
+const Artist = use('App/Models/Artist');
+const Format = use('App/Models/AlbumFormat');
+const Record = use('App/Models/AlbumRecord');
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
+
+const getOrCreateArtist = async (name) => {
+  try {
+    return await Artist.findByOrFail('name', name);
+  } catch (e) {
+    return await Artist.create({ name });
+  }
+}
 
 /**
  * Resourceful controller for interacting with albums
@@ -20,7 +31,10 @@ class AlbumController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
-    const albums = await Album.all();
+    const albums = await Album
+      .query()
+      .with('artist')
+      .fetch();
     return albums.toJSON();
   }
 
@@ -33,10 +47,17 @@ class AlbumController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const body = request.post();
+    const { artist: artistName, title, year } = request.post();
+    // Create album.
     const album = new Album();
-    album.fill(body);
+    album.merge({ title, year });
+    console.log(album);
+    // Save album and return album data.
     await album.save();
+    // Get (or create) + associate artist.
+    const artist = await getOrCreateArtist(artistName);
+    album.artist().associate(artist);
+    response.status(201);
     return album.toJSON();
   }
 
