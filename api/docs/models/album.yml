@@ -1,0 +1,16 @@
+definitions:
+  Album:
+    type: object
+    properties:
+      id:
+        type: uint
+      created_at:
+        type: string
+      updated_at:
+        type: string
+      title:
+        type: string
+      year:
+        type: uint
+      artist_id:
+        type: uint

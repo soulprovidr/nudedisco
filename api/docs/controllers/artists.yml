@@ -1,0 +1,28 @@
+/artists:
+  get:
+    description: Returns the list of artists.
+    responses:
+      200:
+        description: OK
+  post:
+    description: Create an artist.
+    parameters:
+      - name: artistName
+        required: true
+        type: string
+        description: Name of artist.
+
+/artists/{artistId}:
+  get:
+    description: Returns an artist by ID.
+    parameters:
+      - in: path
+        name: artistId
+        required: true
+        type: integer
+        description: Numeric ID of artist.
+    responses:
+      200:
+        description: An artist object.
+        schema:
+          $ref: '#/definitions/Artist'

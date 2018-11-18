@@ -1,0 +1,21 @@
+/records:
+  get:
+    description: Returns the list of records.
+    responses:
+      200:
+        description: OK
+
+/records/{recordId}:
+  get:
+    description: Returns an record by ID.
+    parameters:
+      - in: path
+        name: recordId
+        required: true
+        type: integer
+        description: Numeric ID of record.
+    responses:
+      200:
+        description: A record object.
+        schema:
+          $ref: '#/definitions/Record'

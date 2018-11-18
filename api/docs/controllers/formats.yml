@@ -1,0 +1,21 @@
+/formats:
+  get:
+    description: Returns the list of available album formats.
+    responses:
+      200:
+        description: OK
+
+/formats/{formatId}:
+  get:
+    description: Returns an album format by ID.
+    parameters:
+      - in: path
+        name: formatId
+        required: true
+        type: integer
+        description: Numeric ID of album format.
+    responses:
+      200:
+        description: An album format object.
+        schema:
+          type: Format

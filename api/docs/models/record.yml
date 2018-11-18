@@ -1,0 +1,14 @@
+definitions:
+  Record:
+    type: object
+    properties:
+      id:
+        type: uint
+      created_at:
+        type: string
+      updated_at:
+        type: string
+      album_id:
+        type: uint
+      format_id:
+        type: uint

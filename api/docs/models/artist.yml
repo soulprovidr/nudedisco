@@ -1,0 +1,8 @@
+definitions:
+  Artist:
+    type: object
+    properties:
+      id:
+        type: uint
+      name:
+        type: string
