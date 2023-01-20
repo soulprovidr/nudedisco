@@ -23,6 +23,7 @@ defmodule Nudedisco.MixProject do
   defp deps do
     [
       {:ace, "~> 0.19.0"},
+      {:mime, "~> 2.0"},
       {:raxx, "~> 1.1"},
       {:httpoison, "~> 1.8"},
       {:poison, "~> 5.0"},
