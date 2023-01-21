@@ -2,25 +2,15 @@ defmodule Nudedisco.Web do
   use Ace.HTTP.Service, port: 8080, cleartext: true
   use Raxx.SimpleServer
 
-  def error_response(status, body) do
-    response(status)
-    |> set_header("content_type", "text/plain")
-    |> set_body(body)
-  end
-
   @impl Raxx.SimpleServer
-  def handle_request(%{method: :GET, path: []}, _state) do
-    case Poison.encode(Nudedisco.get_the_guardian_reviews()) do
-      {:ok, json} ->
-        response(:ok)
-        |> set_header("content_type", "application/json")
-        |> set_body(json)
-      {:error, _exception} ->
-        error_response(500, "Could not decode content source.")
-    end
+  def handle_request(%{method: :GET, path: []}, _) do
+    results = Nudedisco.get_all_sources()
+    response(:ok)
+    |> set_header("content_type", "text/html")
+    |> set_body(Nudedisco.Templates.index(results))
   end
 
-  def handle_request(request = %{method: :GET, path: ["static" | _rest]}, _state) do
+  def handle_request(request = %{method: :GET, path: [_rest]}, _) do
     request_path = Path.join(request.path)
     file_path = Path.join(:code.priv_dir(:nudedisco), request_path)
     case File.read(file_path) do
@@ -31,15 +21,13 @@ defmodule Nudedisco.Web do
         |> set_body(file)
       {:error, exception} ->
         case exception do
-          :enoent -> error_response(404, "File not found.")
-          _ -> error_response(500, "Error reading file.")
+          :enoent -> response(:not_found)
+          _ -> response(:error)
         end
     end
   end
 
-  def handle_request(%{method: :GET, path: _}, _state) do
+  def handle_request(%{method: :GET, path: _}, _) do
     response(:not_found)
-    |> set_header("content_type", "text/plain")
-    |> set_body(Nudedisco.Templates.index)
   end
 end
