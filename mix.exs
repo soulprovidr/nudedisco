@@ -26,7 +26,6 @@ defmodule Nudedisco.MixProject do
       {:mime, "~> 2.0"},
       {:raxx, "~> 1.1"},
       {:httpoison, "~> 1.8"},
-      {:poison, "~> 5.0"},
       {:sweet_xml, "~> 0.7.1"}
     ]
   end

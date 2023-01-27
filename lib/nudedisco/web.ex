@@ -4,10 +4,10 @@ defmodule Nudedisco.Web do
 
   @impl Raxx.SimpleServer
   def handle_request(%{method: :GET, path: []}, _) do
-    results = Nudedisco.get_all_sources()
+    feeds = Nudedisco.get_all_feeds()
     response(:ok)
     |> set_header("content_type", "text/html")
-    |> set_body(Nudedisco.Templates.index(results))
+    |> set_body(Nudedisco.Templates.index(feeds))
   end
 
   def handle_request(request = %{method: :GET, path: [_rest]}, _) do

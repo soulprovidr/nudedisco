@@ -2,12 +2,112 @@
   box-sizing: border-box;
 }
 
-html {
+:root {
+  --header-height: 48px;
+}
+
+body {
   background: white;
   color: black;
   font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  padding: 32px;
+}
+
+header {
+  top: 0;
+  right: 0;
+  left: 0;
+  color: #1b2940;
+  font-size: 2em;
+  font-family: MuseoModerno, Arial, Helvetica, sans-serif;
+  letter-spacing: -1px;
+  z-index: 1;
+}
+
+h5 {
+  margin-bottom: 0.5rem;
+}
+
+a, a:active {
+  color: #1b2940;
+  text-decoration: none;
+}
+
+section {
+  padding: 24px 0;
+}
+
+section:not(:first-of-type) {
+  border-top: 1px dotted #ddd;
+}
+
+.item {
+  margin-bottom: 2.5rem;
+}
+
+.item img {
+  border-radius: 4px;
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+
+.item p:empty {
+  display: none;
+}
+
+.item br {
+  display: none;
+}
+
+.item ul {
+  display: none;
+}
+
+.item-inline:not(:last-of-type)::after {
+  content: '<>';
+  color: #ddd;
+}
+
+/* .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.column {
+  padding: 8px 0;
+}
+
+.column h2 {
+  margin: 0 0 8px;
 }
 
 ul {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
+
+ul li {
+  cursor: pointer;
+  padding: 16px 0;
+}
+
+ul li h3 {
+  margin: 0 0 8px;
+}
+
+ul li img {
+  max-width: 100%;
+  height: auto;
+}
+
+ul li p {
+  margin: 0;
+}
+
+ul li:not(:last-of-type) {
+  border-bottom: 1px dotted #ddd;
+} */

@@ -4,21 +4,132 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=MuseoModerno&family=Roboto:ital,wght@0,300;0,700;1,300;1,700&display=swap" >
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
   <link rel="stylesheet" href="style.css" />
   <title>nudedisco</title>
 </head>
 <body>
-  <ul>
-    <%= for item <- items do %>
-      <li>
-        <h3>
-          <a href="<%= item.url %>" target="_blank">
-            <%= item.title %>
-          </a>
-        </h3>
-        <p><%= item.description %>
-      </li>
+
+  <div class="container">
+
+    <header>nudedisco</header>
+
+    <!-- Pitchfork Reviews -->
+    <%= if Map.has_key?(feeds, :pitchfork_reviews) do %>
+    <section>
+      <h4><%= feeds.pitchfork_reviews.name %></h4>
+      <div class="row">
+        <%= for item <- feeds.pitchfork_reviews.items do %>
+          <div class="item column">
+            <img src="<%= item.image %>" width="100%" />
+            <h5>
+              <a href="<%= item.url %>" target="_blank">
+                <%= item.title %>
+              </a>
+            </h5>
+            <div><%= item.description %></div>
+          </div>
+        <% end %>
+      </div>
+    </section>
     <% end %>
-  </ul>
+
+    <section>
+      <div class="row">
+
+        <!-- Pitchfork Best Albums -->
+        <%= if Map.has_key?(feeds, :pitchfork_best_albums) do %>
+          <div class="column">
+            <h4><%= feeds.pitchfork_best_albums.name %></h4>
+            <%= for item <- feeds.pitchfork_best_albums.items do %>
+              <div class="item">
+                <h5>
+                  <a href="<%= item.url %>" target="_blank">
+                    <%= item.title %>
+                  </a>
+                </h5>
+                <div><%= item.description %></div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <!-- Rolling Stone -->
+        <%= if Map.has_key?(feeds, :rolling_stone_reviews) do %>
+          <div class="column">
+            <h4><%= feeds.rolling_stone_reviews.name %></h4>
+            <%= for item <- feeds.rolling_stone_reviews.items do %>
+              <div class="item">
+                <h5>
+                  <a href="<%= item.url %>" target="_blank">
+                    <%= item.title %>
+                  </a>
+                </h5>
+                <div><%= item.description %></div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <!-- The Quietus -->
+        <%= if Map.has_key?(feeds, :the_quietus_reviews) do %>
+          <div class="column">
+            <h4><%= feeds.the_quietus_reviews.name %></h4>
+            <%= for item <- feeds.the_quietus_reviews.items do %>
+              <div class="item">
+                <h5>
+                  <a href="<%= item.url %>" target="_blank">
+                    <%= item.title %>
+                  </a>
+                </h5>
+                <div><%= item.description %></div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+      </div>
+    </section>
+
+    <!-- The Guardian Reviews -->
+    <%= if Map.has_key?(feeds, :the_guardian_reviews) do %>
+    <section>
+      <h4><%= feeds.the_guardian_reviews.name %></h4>
+      <%= for item <- feeds.the_guardian_reviews.items do %>
+      <span class="item-inline">
+        <a href="<%= item.url %>" target="_blank">
+          <%= item.title %>
+        </a>
+      </span>
+      <% end %>
+    </section>
+    <% end %>
+
+
+    <!-- NME Reviews -->
+    <%= if Map.has_key?(feeds, :nme_reviews) do %>
+    <section>
+      <h4><%= feeds.nme_reviews.name %></h4>
+      <div class="row">
+        <%= for item <- feeds.nme_reviews.items do %>
+          <div class="item column">
+            <h5>
+              <a href="<%= item.url %>" target="_blank">
+                <%= item.title %>
+              </a>
+            </h5>
+            <div><%= item.description %></div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+    <% end %>
+
+  </div>
+
 </body>
 </html>
