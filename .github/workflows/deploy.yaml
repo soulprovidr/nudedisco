@@ -1,8 +1,10 @@
 name: Deploy to fly.io
 
 on:
-  push:
-    branches: ["main"]
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
