@@ -25,7 +25,7 @@ defmodule Nudedisco do
       {:ok, body} ->
         items = xpath(body, xpath_spec, xpath_subspec)
         |> Enum.take(count)
-        %{ name: name, items: items }
+        %{name: name, items: items}
       {:error} ->
         IO.warn("Error reading " <> name <> ".")
         nil
