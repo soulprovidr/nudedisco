@@ -8,6 +8,7 @@ defmodule Nudedisco.Application do
     children = [
       Nudedisco.Web
     ]
+
     Supervisor.start_link(children, strategy: :one_for_one)
   end
 end
