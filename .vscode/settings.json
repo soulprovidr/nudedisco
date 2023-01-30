@@ -1,0 +1,6 @@
+{
+  "editor.defaultFormatter": "JakeBecker.elixir-ls",
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "file:///Users/soulprovidr/Projects/nudedisco/.github/workflows/deploy.yaml"
+  }
+}

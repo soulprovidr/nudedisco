@@ -11,7 +11,7 @@ body {
   color: black;
   font-family: Helvetica, Arial, sans-serif;
   font-size: 14px;
-  padding: 32px;
+  padding: 32px 0;
 }
 
 header {
@@ -65,7 +65,7 @@ section:not(:first-of-type) {
 }
 
 .item-inline:not(:last-of-type)::after {
-  content: '<>';
+  content: '+++';
   color: #ddd;
 }
 
