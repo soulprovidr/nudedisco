@@ -66,8 +66,8 @@
         <!-- Pitchfork Best Albums -->
         <%= if Map.fetch!(feeds, :pitchfork_best_albums) != nil do %>
           <div class="column">
-            <h4><%= feeds.pitchfork_best_albums.name %></h4>
-            <%= for item <- feeds.pitchfork_best_albums.items do %>
+            <h4><%= feeds.npr_reviews.name %></h4>
+            <%= for item <- feeds.npr_reviews.items do %>
               <div class="item">
                 <h5>
                   <a href="<%= item.url %>" target="_blank">
@@ -139,6 +139,72 @@
       <div class="row">
         <%= for item <- feeds.nme_reviews.items do %>
           <div class="item column">
+            <h5>
+              <a href="<%= item.url %>" target="_blank">
+                <%= item.title %>
+              </a>
+            </h5>
+            <div><%= item.description %></div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+    <% end %>
+
+
+    <!-- BBC -->
+    <%= if feeds.bbc_reviews != nil do %>
+    <section>
+      <h4><%= feeds.bbc_reviews.name %></h4>
+      <div class="row">
+        <%= for item <- feeds.bbc_reviews.items do %>
+          <div class="item column column-50">
+            <div class="row">
+              <div class="column column-25">
+                <img src="<%= item.image %>" />
+              </div>
+              <div class="column column-75">
+                <h5>
+                  <a href="<%= item.url %>" target="_blank">
+                    <%= item.title %>
+                  </a>
+                </h5>
+                <div><%= item.description %></div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+    <% end %>
+
+    <section>
+      <!-- Pitchfork Best Albums -->
+        <%= if feeds.pitchfork_best_albums != nil do %>
+          <div class="column">
+            <h4><%= feeds.pitchfork_best_albums.name %></h4>
+            <%= for item <- feeds.pitchfork_best_albums.items do %>
+              <div class="item">
+                <h5>
+                  <a href="<%= item.url %>" target="_blank">
+                    <%= item.title %>
+                  </a>
+                </h5>
+                <div><%= item.description %></div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+    </section>
+
+    <!-- The Needledrop -->
+    <%= if feeds.the_needledrop != nil do %>
+    <section>
+      <h4><%= feeds.the_needledrop.name %></h4>
+      <div class="row">
+        <%= for item <- feeds.the_needledrop.items do %>
+          <div class="item column">
+            <img src="<%= item.image %>" width="100%" />
             <h5>
               <a href="<%= item.url %>" target="_blank">
                 <%= item.title %>

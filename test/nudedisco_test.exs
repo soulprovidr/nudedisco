@@ -24,6 +24,16 @@ defmodule NudediscoTest do
     assert is_bitstring(map.image)
   end
 
+  test "fetches album reviews from the BBC" do
+    feed = Nudedisco.get_bbc_reviews_feed()
+    assert_feed_with_images(feed, 6)
+  end
+
+  test "fetches album reviews from The Guardian" do
+    feed = Nudedisco.get_the_guardian_reviews_feed()
+    assert_feed(feed, 6)
+  end
+
   test "fetches articles from The Needledrop" do
     feed = Nudedisco.get_the_needledrop_feed()
     assert_feed_with_images(feed, 4)
@@ -31,6 +41,11 @@ defmodule NudediscoTest do
 
   test "fetches album reviews from NME" do
     feed = Nudedisco.get_nme_reviews_feed()
+    assert_feed(feed, 3)
+  end
+
+  test "fetches album reviews from NPR" do
+    feed = Nudedisco.get_npr_reviews_feed()
     assert_feed(feed, 3)
   end
 
@@ -49,10 +64,6 @@ defmodule NudediscoTest do
     assert_feed(feed, 4)
   end
 
-  test "fetches album reviews from The Guardian" do
-    feed = Nudedisco.get_the_guardian_reviews_feed()
-    assert_feed(feed, 6)
-  end
 
   test "fetches album reviews from The Quietus" do
     feed = Nudedisco.get_the_quietus_reviews_feed()

@@ -2,13 +2,15 @@ defmodule Nudedisco do
   import SweetXml
 
   @feeds %{
+    bbc_reviews: &Nudedisco.get_bbc_reviews_feed/0,
+    the_guardian_reviews: &Nudedisco.get_the_guardian_reviews_feed/0,
     the_needledrop: &Nudedisco.get_the_needledrop_feed/0,
     nme_reviews: &Nudedisco.get_nme_reviews_feed/0,
+    npr_reviews: &Nudedisco.get_npr_reviews_feed/0,
     pitchfork_best_albums: &Nudedisco.get_pitchfork_best_albums_feed/0,
     pitchfork_reviews: &Nudedisco.get_pitchfork_reviews_feed/0,
-    rolling_stone_reviews: &Nudedisco.get_rolling_stone_reviews_feed/0,
     the_quietus_reviews: &Nudedisco.get_the_quietus_reviews_feed/0,
-    the_guardian_reviews: &Nudedisco.get_the_guardian_reviews_feed/0
+    rolling_stone_reviews: &Nudedisco.get_rolling_stone_reviews_feed/0
   }
 
   defp get_xml(url) do
@@ -36,6 +38,21 @@ defmodule Nudedisco do
     end
   end
 
+  @spec get_bbc_reviews_feed :: nil | %{items: list, name: <<_::24, _::_*8>>}
+  def get_bbc_reviews_feed do
+    get_feed(
+      "BBC",
+      "https://www.bbc.co.uk/music/reviews/latest.rss",
+      6,
+      ~x"//item"l,
+      title: ~x"./title/text()"s,
+      description: ~x"./description/text()"s,
+      image: ~x"./media:thumbnail/@url"s,
+      url: ~x"./link/text()"s,
+      date: ~x"./pubDate/text()"s
+    )
+  end
+
   def get_the_needledrop_feed do
     get_feed(
       "The Needledrop",
@@ -54,6 +71,19 @@ defmodule Nudedisco do
     get_feed(
       "NME",
       "https://www.nme.com/reviews/album/feed",
+      3,
+      ~x"//item"l,
+      title: ~x"./title/text()"s,
+      description: ~x"./description/text()"s,
+      url: ~x"./link/text()"s,
+      date: ~x"./pubDate/text()"s
+    )
+  end
+
+  def get_npr_reviews_feed do
+    get_feed(
+      "NPR",
+      "https://feeds.npr.org/1104/rss.xml",
       3,
       ~x"//item"l,
       title: ~x"./title/text()"s,
