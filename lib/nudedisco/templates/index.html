@@ -40,12 +40,60 @@
 
     <header>nudedisco</header>
 
-    <!-- Pitchfork Reviews -->
-    <%= if Map.fetch!(feeds, :pitchfork_reviews) != nil do %>
     <section>
-      <h4><%= feeds.pitchfork_reviews.name %></h4>
       <div class="row">
-        <%= for item <- feeds.pitchfork_reviews.items do %>
+
+        <!-- The Guardian -->
+        <%= if feeds.the_guardian.items != nil do %>
+        <div class="column">
+          <h4><%= feeds.the_guardian.name %></h4>
+          <%= for item <- feeds.the_guardian.items do %>
+          <div class="item-link">
+            <a href="<%= item.url %>" target="_blank">
+              <%= item.title %>
+            </a>
+          </div>
+          <% end %>
+        </div>
+        <% end %>
+
+        <!-- Rolling Stone -->
+        <%= if feeds.rolling_stone.items != nil do %>
+        <div class="column">
+          <h4><%= feeds.rolling_stone.name %></h4>
+          <%= for item <- feeds.rolling_stone.items do %>
+            <div class="item-link">
+              <a href="<%= item.url %>" target="_blank">
+                <%= item.title %>
+              </a>
+            </div>
+          <% end %>
+        </div>
+        <% end %>
+
+        <!-- PopMatters -->
+        <%= if feeds.popmatters.items != nil do %>
+        <div class="column">
+          <h4><%= feeds.popmatters.name %></h4>
+          <%= for item <- feeds.popmatters.items do %>
+          <div class="item-link">
+            <a href="<%= item.url %>" target="_blank">
+              <%= item.title %>
+            </a>
+          </div>
+          <% end %>
+        </div>
+        <% end %>
+
+      </div>
+    </section>
+
+    <!-- Pitchfork Reviews -->
+    <%= if feeds.pitchfork.items != nil do %>
+    <section>
+      <h4><%= feeds.pitchfork.name %></h4>
+      <div class="row">
+        <%= for item <- feeds.pitchfork.items do %>
           <div class="item column">
             <img src="<%= item.image %>" width="100%" />
             <h5>
@@ -63,81 +111,57 @@
     <section>
       <div class="row">
 
-        <!-- Pitchfork Best Albums -->
-        <%= if Map.fetch!(feeds, :pitchfork_best_albums) != nil do %>
-          <div class="column">
-            <h4><%= feeds.npr_reviews.name %></h4>
-            <%= for item <- feeds.npr_reviews.items do %>
-              <div class="item">
-                <h5>
-                  <a href="<%= item.url %>" target="_blank">
-                    <%= item.title %>
-                  </a>
-                </h5>
-                <div><%= item.description %></div>
-              </div>
-            <% end %>
+        <!-- NPR -->
+        <%= if feeds.npr.items != nil do %>
+        <div class="column">
+          <h4><%= feeds.npr.name %></h4>
+          <%= for item <- feeds.npr.items do %>
+          <div class="item-link">
+            <a href="<%= item.url %>" target="_blank">
+              <%= item.title %>
+            </a>
           </div>
+          <% end %>
+        </div>
         <% end %>
 
-        <!-- Rolling Stone -->
-        <%= if Map.fetch!(feeds, :rolling_stone_reviews) != nil do %>
-          <div class="column">
-            <h4><%= feeds.rolling_stone_reviews.name %></h4>
-            <%= for item <- feeds.rolling_stone_reviews.items do %>
-              <div class="item">
-                <h5>
-                  <a href="<%= item.url %>" target="_blank">
-                    <%= item.title %>
-                  </a>
-                </h5>
-                <div><%= item.description %></div>
-              </div>
-            <% end %>
+        <!-- Backseat Mafia -->
+        <%= if feeds.backseat_mafia.items != nil do %>
+        <div class="column">
+          <h4><%= feeds.backseat_mafia.name %></h4>
+          <%= for item <- feeds.backseat_mafia.items do %>
+          <div class="item-link">
+            <a href="<%= item.url %>" target="_blank">
+              <%= item.title %>
+            </a>
           </div>
+          <% end %>
+        </div>
         <% end %>
 
-        <!-- The Quietus -->
-        <%= if Map.fetch!(feeds, :the_quietus_reviews) != nil do %>
-          <div class="column">
-            <h4><%= feeds.the_quietus_reviews.name %></h4>
-            <%= for item <- feeds.the_quietus_reviews.items do %>
-              <div class="item">
-                <h5>
-                  <a href="<%= item.url %>" target="_blank">
-                    <%= item.title %>
-                  </a>
-                </h5>
-                <div><%= item.description %></div>
-              </div>
-            <% end %>
-          </div>
+        <!-- Louder Than War -->
+        <%= if feeds.louder_than_war.items != nil do %>
+        <div class="column">
+          <h4><%= feeds.louder_than_war.name %></h4>
+          <%= for item <- feeds.louder_than_war.items do %>
+            <div class="item-link">
+              <a href="<%= item.url %>" target="_blank">
+                <%= item.title %>
+              </a>
+            </div>
+          <% end %>
+        </div>
         <% end %>
 
       </div>
     </section>
 
-    <!-- The Guardian Reviews -->
-    <%= if Map.fetch!(feeds, :the_guardian_reviews) != nil do %>
-    <section>
-      <h4><%= feeds.the_guardian_reviews.name %></h4>
-      <%= for item <- feeds.the_guardian_reviews.items do %>
-      <span class="item-inline">
-        <a href="<%= item.url %>" target="_blank">
-          <%= item.title %>
-        </a>
-      </span>
-      <% end %>
-    </section>
-    <% end %>
-
-
     <!-- NME Reviews -->
-    <%= if Map.fetch!(feeds, :nme_reviews) != nil do %>
+    <%= if feeds.nme.items != nil do %>
     <section>
-      <h4><%= feeds.nme_reviews.name %></h4>
+      <h4><%= feeds.nme.name %></h4>
       <div class="row">
-        <%= for item <- feeds.nme_reviews.items do %>
+        <%= for item <- feeds.nme.items do %>
           <div class="item column">
             <h5>
               <a href="<%= item.url %>" target="_blank">
@@ -151,27 +175,38 @@
     </section>
     <% end %>
 
-
-    <!-- BBC -->
-    <%= if feeds.bbc_reviews != nil do %>
+    <!-- Dork -->
+    <%= if feeds.readdork.items != nil do %>
     <section>
-      <h4><%= feeds.bbc_reviews.name %></h4>
+      <h4><%= feeds.readdork.name %></h4>
       <div class="row">
-        <%= for item <- feeds.bbc_reviews.items do %>
-          <div class="item column column-50">
-            <div class="row">
-              <div class="column column-25">
-                <img src="<%= item.image %>" />
-              </div>
-              <div class="column column-75">
-                <h5>
-                  <a href="<%= item.url %>" target="_blank">
-                    <%= item.title %>
-                  </a>
-                </h5>
-                <div><%= item.description %></div>
-              </div>
-            </div>
+        <%= for item <- feeds.readdork.items do %>
+          <div class="item column">
+            <h5>
+              <a href="<%= item.url %>" target="_blank">
+                <%= item.title %>
+              </a>
+            </h5>
+            <div><%= item.description %></div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+    <% end %>
+
+    <!-- Uncut Reviews -->
+    <%= if feeds.uncut.items != nil do %>
+    <section>
+      <h4><%= feeds.uncut.name %></h4>
+      <div class="row">
+        <%= for item <- feeds.uncut.items do %>
+          <div class="item column">
+            <h5>
+              <a href="<%= item.url %>" target="_blank">
+                <%= item.title %>
+              </a>
+            </h5>
+            <div><%= item.description %></div>
           </div>
         <% end %>
       </div>
@@ -179,26 +214,45 @@
     <% end %>
 
     <section>
-      <!-- Pitchfork Best Albums -->
-        <%= if feeds.pitchfork_best_albums != nil do %>
-          <div class="column">
-            <h4><%= feeds.pitchfork_best_albums.name %></h4>
-            <%= for item <- feeds.pitchfork_best_albums.items do %>
-              <div class="item">
-                <h5>
-                  <a href="<%= item.url %>" target="_blank">
-                    <%= item.title %>
-                  </a>
-                </h5>
-                <div><%= item.description %></div>
-              </div>
-            <% end %>
-          </div>
+      <div class="row">
+        <!-- Pitchfork Best Albums -->
+        <%= if feeds.pitchfork_best_albums.items != nil do %>
+        <div class="column">
+          <h4><%= feeds.pitchfork_best_albums.name %></h4>
+          <%= for item <- feeds.pitchfork_best_albums.items do %>
+            <div class="item">
+              <h5>
+                <a href="<%= item.url %>" target="_blank">
+                  <%= item.title %>
+                </a>
+              </h5>
+              <div><%= item.description %></div>
+            </div>
+          <% end %>
+        </div>
         <% end %>
+
+        <!-- The Quietus -->
+        <%= if feeds.the_quietus.items != nil do %>
+        <div class="column">
+          <h4><%= feeds.the_quietus.name %></h4>
+          <%= for item <- feeds.the_quietus.items do %>
+            <div class="item">
+              <h5>
+                <a href="<%= item.url %>" target="_blank">
+                  <%= item.title %>
+                </a>
+              </h5>
+              <div><%= item.description %></div>
+            </div>
+          <% end %>
+        </div>
+        <% end %>
+      </div>
     </section>
 
     <!-- The Needledrop -->
-    <%= if feeds.the_needledrop != nil do %>
+    <%= if feeds.the_needledrop.items != nil do %>
     <section>
       <h4><%= feeds.the_needledrop.name %></h4>
       <div class="row">
