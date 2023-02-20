@@ -66,7 +66,7 @@ defmodule Nudedisco do
       xpath_subspec: @default_xpath_subspec
     },
     pitchfork: %{
-      name: "Pitchfork: Album Reviews",
+      name: "Pitchfork",
       feed_url: "https://pitchfork.com/feed/feed-album-reviews/rss",
       site_url: "https://pitchfork.com/feed-album-reviews",
       xpath_spec: @default_xpath_spec,

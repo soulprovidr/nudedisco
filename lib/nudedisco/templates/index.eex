@@ -37,10 +37,18 @@
   <div class="container">
     <header>nudedisco</header>
     <%= Enum.join(sections) %>
+    <footer>
+      <a class="powered-by" href="https://soulprovidr.fm" target="_blank">
+          <img src="sp-logo.png">
+        <span>
+          Powered by Soul Provider®
+        </span>
+      </a>
+    </footer>
   </div>
   <script type="text/javascript">
     // Prevent iframes from loading scripts.
-    Array.from(window.frames).forEach((f) => f.stop());
+    Array.from(window.frames).forEach((f) => f.stop());⚡️
   </script>
 </body>
 </html>

@@ -75,6 +75,37 @@ h4 a:hover {
   display: none;
 }
 
+footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 13px;
+  letter-spacing: -.08px;
+  padding: 24px 0;
+}
+
+.powered-by {
+  color: #767676;
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  gap: 10px;
+}
+
+.powered-by img {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: transform 150ms ease;
+  width: 24px;
+  height: 24px;
+}
+
+.powered-by:hover img {
+  transform: scale(1.1);
+}
+
 @media screen and (max-width: 40.0rem) {
   .column {
     margin-bottom: 24px;
