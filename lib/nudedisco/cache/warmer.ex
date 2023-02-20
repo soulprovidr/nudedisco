@@ -4,7 +4,7 @@ defmodule Nudedisco.Cache.Warmer do
   def interval, do: :timer.hours(1)
 
   def execute(_args) do
-    feeds = Nudedisco.get_all_feeds()
+    feeds = Nudedisco.get_feeds()
     {:ok, [{"feeds", feeds}]}
   end
 end

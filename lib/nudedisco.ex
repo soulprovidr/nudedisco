@@ -1,14 +1,109 @@
 defmodule Nudedisco do
   import SweetXml
 
+  @default_xpath_spec ~x"//item"l
+  @default_xpath_subspec [
+    title: ~x"./title/text()"s,
+    description: ~x"./description/text()"s,
+    url: ~x"./link/text()"s,
+    date: ~x"./pubDate/text()"s
+  ]
+
   @feeds %{
-    the_needledrop: &Nudedisco.get_the_needledrop_feed/0,
-    nme_reviews: &Nudedisco.get_nme_reviews_feed/0,
-    pitchfork_best_albums: &Nudedisco.get_pitchfork_best_albums_feed/0,
-    pitchfork_reviews: &Nudedisco.get_pitchfork_reviews_feed/0,
-    rolling_stone_reviews: &Nudedisco.get_rolling_stone_reviews_feed/0,
-    the_quietus_reviews: &Nudedisco.get_the_quietus_reviews_feed/0,
-    the_guardian_reviews: &Nudedisco.get_the_guardian_reviews_feed/0
+    backseat_mafia: %{
+      name: "Backseat Mafia",
+      feed_url: "https://www.backseatmafia.com/category/album-reviews/feed/",
+      site_url: "https://www.backseatmafia.com/category/album-reviews/",
+      xpath_spec: @default_xpath_spec,
+      xpath_subspec: @default_xpath_subspec
+    },
+    bandcamp: %{
+      name: "Bandcamp Daily",
+      feed_url: "https://daily.bandcamp.com/feed",
+      site_url: "https://daily.bandcamp.com",
+      xpath_spec: @default_xpath_spec,
+      xpath_subspec: @default_xpath_subspec
+    },
+    beatsperminute: %{
+      name: "Beats Per Minute",
+      feed_url: "https://beatsperminute.com/category/reviews/album-reviews/feed/",
+      site_url: "https://beatsperminute.com/category/reviews/album-reviews/",
+      xpath_spec: @default_xpath_spec,
+      xpath_subspec: @default_xpath_subspec
+    },
+    the_guardian: %{
+      name: "The Guardian",
+      feed_url: "https://www.theguardian.com/music+tone/albumreview/rss",
+      site_url: "https://www.theguardian.com/music+tone/albumreview",
+      xpath_spec: @default_xpath_spec,
+      xpath_subspec: @default_xpath_subspec
+    },
+    the_needledrop: %{
+      name: "The Needledrop",
+      feed_url: "https://www.theneedledrop.com/articles?format=rss",
+      site_url: "https://www.theneedledrop.com/articles",
+      xpath_spec: @default_xpath_spec,
+      xpath_subspec: [
+        title: ~x"./title/text()"s,
+        description: ~x"./description/text()"s,
+        image: ~x"./media:content/@url"s,
+        url: ~x"./link/text()"s,
+        date: ~x"./pubDate/text()"s
+      ]
+    },
+    nme: %{
+      name: "NME",
+      feed_url: "https://www.nme.com/reviews/album/feed",
+      site_url: "https://www.nme.com/reviews/album",
+      xpath_spec: @default_xpath_spec,
+      xpath_subspec: @default_xpath_subspec
+    },
+    npr: %{
+      name: "NPR",
+      feed_url: "https://feeds.npr.org/1104/rss.xml",
+      site_url: "https://www.npr.org/sections/music-reviews/",
+      xpath_spec: @default_xpath_spec,
+      xpath_subspec: @default_xpath_subspec
+    },
+    pitchfork: %{
+      name: "Pitchfork: Album Reviews",
+      feed_url: "https://pitchfork.com/feed/feed-album-reviews/rss",
+      site_url: "https://pitchfork.com/feed-album-reviews",
+      xpath_spec: @default_xpath_spec,
+      xpath_subspec: [
+        title: ~x"./title/text()"s,
+        description: ~x"./description/text()"s,
+        image: ~x"./media:thumbnail/@url"s,
+        url: ~x"./link/text()"s,
+        date: ~x"./pubDate/text()"s
+      ]
+    },
+    popmatters: %{
+      name: "PopMatters",
+      feed_url: "https://www.popmatters.com/category/music-reviews/feed",
+      site_url: "https://www.popmatters.com/category/music-reviews",
+      xpath_spec: @default_xpath_spec,
+      xpath_subspec: @default_xpath_subspec
+    },
+    the_quietus: %{
+      name: "The Quietus",
+      feed_url: "https://thequietus.com/reviews.atom",
+      site_url: "https://thequietus.com",
+      xpath_spec: ~x"//entry"l,
+      xpath_subspec: [
+        title: ~x"./title/text()"s,
+        description: ~x"./content/text()"s,
+        url: ~x"./link/@href"s,
+        date: ~x"./published/text()"s
+      ]
+    },
+    rolling_stone: %{
+      name: "Rolling Stone",
+      feed_url: "https://www.rollingstone.com/music/music-album-reviews/feed/",
+      site_url: "https://www.rollingstone.com/music/music-album-reviews/",
+      xpath_spec: @default_xpath_spec,
+      xpath_subspec: @default_xpath_subspec
+    }
   }
 
   defp get_xml(url) do
@@ -21,117 +116,26 @@ defmodule Nudedisco do
     end
   end
 
-  defp get_feed(name, url, count, xpath_spec, xpath_subspec) do
-    case get_xml(url) do
+  defp get_feed_items(feed_url, xpath_spec, xpath_subspec) do
+    case get_xml(feed_url) do
       {:ok, body} ->
-        items =
-          xpath(body, xpath_spec, xpath_subspec)
-          |> Enum.take(count)
-
-        %{name: name, items: items}
+        xpath(body, xpath_spec, xpath_subspec)
 
       {:error} ->
-        IO.warn("Error reading " <> name <> ".")
+        IO.warn("Error reading " <> feed_url <> ".")
         nil
     end
   end
 
-  def get_the_needledrop_feed do
-    get_feed(
-      "The Needledrop",
-      "https://www.theneedledrop.com/articles?format=rss",
-      4,
-      ~x"//item"l,
-      title: ~x"./title/text()"s,
-      description: ~x"./description/text()"s,
-      image: ~x"./media:content/@url"s,
-      url: ~x"./link/text()"s,
-      date: ~x"./pubDate/text()"s
-    )
-  end
+  def get_feeds do
+    for {k, v} <- @feeds, into: %{} do
+      feed = %{name: v.name, site_url: v.site_url, slug: k, items: nil}
+      items = get_feed_items(v.feed_url, v.xpath_spec, v.xpath_subspec)
 
-  def get_nme_reviews_feed do
-    get_feed(
-      "NME",
-      "https://www.nme.com/reviews/album/feed",
-      3,
-      ~x"//item"l,
-      title: ~x"./title/text()"s,
-      description: ~x"./description/text()"s,
-      url: ~x"./link/text()"s,
-      date: ~x"./pubDate/text()"s
-    )
-  end
-
-  def get_pitchfork_best_albums_feed do
-    get_feed(
-      "Pitchfork: Best New Albums",
-      "https://pitchfork.com/rss/reviews/best/albums/",
-      3,
-      ~x"//item"l,
-      title: ~x"./title/text()"s,
-      description: ~x"./description/text()"s,
-      url: ~x"./link/text()"s,
-      date: ~x"./pubDate/text()"s
-    )
-  end
-
-  def get_pitchfork_reviews_feed do
-    get_feed(
-      "Pitchfork: Album Reviews",
-      "https://pitchfork.com/feed/feed-album-reviews/rss",
-      4,
-      ~x"//item"l,
-      title: ~x"./title/text()"s,
-      description: ~x"./description/text()"s,
-      image: ~x"./media:thumbnail/@url"s,
-      url: ~x"./link/text()"s,
-      date: ~x"./pubDate/text()"s
-    )
-  end
-
-  def get_rolling_stone_reviews_feed do
-    get_feed(
-      "Rolling Stone",
-      "https://www.rollingstone.com/music/music-album-reviews/feed/",
-      4,
-      ~x"//item"l,
-      title: ~x"./title/text()"s,
-      description: ~x"./description/text()"s,
-      url: ~x"./link/text()"s,
-      date: ~x"./pubDate/text()"s
-    )
-  end
-
-  def get_the_guardian_reviews_feed do
-    get_feed(
-      "The Guardian",
-      "https://www.theguardian.com/music+tone/albumreview/rss",
-      6,
-      ~x"//item"l,
-      title: ~x"./title/text()"s,
-      description: ~x"./description/text()"s,
-      # image: ~x"./media:content/@url[position() = 1]"s,
-      url: ~x"./link/text()"s,
-      date: ~x"./pubDate/text()"s
-    )
-  end
-
-  def get_the_quietus_reviews_feed do
-    get_feed(
-      "The Quietus",
-      "https://thequietus.com/reviews.atom",
-      4,
-      ~x"//entry"l,
-      title: ~x"./title/text()"s,
-      description: ~x"./content/text()"s,
-      url: ~x"./link/@href"s,
-      date: ~x"./published/text()"s
-    )
-  end
-
-  @spec get_all_feeds :: any
-  def get_all_feeds do
-    for {k, v} <- @feeds, into: %{}, do: {k, v.()}
+      case items do
+        nil -> {k, feed}
+        _ -> {k, Map.put(feed, :items, items)}
+      end
+    end
   end
 end

@@ -1,11 +1,3 @@
-* {
-  box-sizing: border-box;
-}
-
-:root {
-  --header-height: 48px;
-}
-
 body {
   background: white;
   color: black;
@@ -25,89 +17,62 @@ header {
   z-index: 1;
 }
 
-h5 {
-  margin-bottom: 0.5rem;
+section {
+  margin: 48px 0;
 }
 
-a, a:active {
+h4 a,
+h4 a:active,
+h4 a:visited {
+  color: black;
+}
+
+h4 a:hover {
+  text-decoration: underline;
+}
+
+.item a,
+.item a:active {
   color: #1b2940;
   text-decoration: none;
 }
 
-section {
-  padding: 24px 0;
+.item a:visited {
+  color: #afafaf;
 }
 
-section:not(:first-of-type) {
-  border-top: 1px dotted #ddd;
+.item p:last-of-type {
+  margin-bottom: 0;
 }
 
-.item {
-  margin-bottom: 2.5rem;
+.item.link {
+  border-bottom: 1px dotted #ddd;
+  padding: 4px 0; 
 }
 
-.item img {
+.item.link:last-of-type {
+  border: none;
+}
+
+.item.cover h5 {
+  margin-bottom: 8px;
+}
+
+.item.cover img {
   border-radius: 4px;
   height: auto;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 }
 
-.item p:empty {
+.item ul,
+.item br,
+.item p:empty,
+.item iframe {
   display: none;
 }
 
-.item br {
-  display: none;
+@media screen and (max-width: 40.0rem) {
+  .column {
+    margin-bottom: 24px;
+  }
 }
-
-.item ul {
-  display: none;
-}
-
-.item-inline:not(:last-of-type)::after {
-  content: '+++';
-  color: #ddd;
-}
-
-/* .row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
-  padding: 16px 0;
-}
-
-.column {
-  padding: 8px 0;
-}
-
-.column h2 {
-  margin: 0 0 8px;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-ul li {
-  cursor: pointer;
-  padding: 16px 0;
-}
-
-ul li h3 {
-  margin: 0 0 8px;
-}
-
-ul li img {
-  max-width: 100%;
-  height: auto;
-}
-
-ul li p {
-  margin: 0;
-}
-
-ul li:not(:last-of-type) {
-  border-bottom: 1px dotted #ddd;
-} */
