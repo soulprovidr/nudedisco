@@ -37,8 +37,12 @@ h4 a:hover {
   text-decoration: none;
 }
 
+.item a:hover {
+  color: #606c76;
+}
+
 .item a:visited {
-  color: #afafaf;
+  color: #767676;
 }
 
 .item p:last-of-type {
