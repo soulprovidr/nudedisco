@@ -2,6 +2,19 @@ defmodule Nudedisco.Web do
   use Ace.HTTP.Service, port: 8080, cleartext: true
   use Raxx.SimpleServer
 
+  defp read_file_from_path(path) do
+    file_path = Path.join(:code.priv_dir(:nudedisco), Path.join(path))
+
+    case File.read(file_path) do
+      {:ok, file} ->
+        mime_type = MIME.from_path(file_path)
+        {:ok, file, mime_type}
+
+      {:error, exception} ->
+        {:error, exception}
+    end
+  end
+
   @impl Raxx.SimpleServer
   def handle_request(%{method: :GET, path: []}, _) do
     feeds = Cachex.get!(:cache, "feeds")
@@ -31,14 +44,13 @@ defmodule Nudedisco.Web do
     )
   end
 
+  def handle_request(%{method: :HEAD, path: []}, _) do
+    response(:ok)
+  end
+
   def handle_request(request = %{method: :GET, path: [_rest]}, _) do
-    request_path = Path.join(request.path)
-    file_path = Path.join(:code.priv_dir(:nudedisco), request_path)
-
-    case File.read(file_path) do
-      {:ok, file} ->
-        mime_type = MIME.from_path(file_path)
-
+    case read_file_from_path(request.path) do
+      {:ok, file, mime_type} ->
         response(:ok)
         |> set_header("content_type", mime_type)
         |> set_body(file)
@@ -51,7 +63,25 @@ defmodule Nudedisco.Web do
     end
   end
 
+  def handle_request(request = %{method: :HEAD, path: [_rest]}, _) do
+    case read_file_from_path(request.path) do
+      {:ok, _file, mime_type} ->
+        response(:ok)
+        |> set_header("content_type", mime_type)
+
+      {:error, exception} ->
+        case exception do
+          :enoent -> response(:not_found)
+          _ -> response(:error)
+        end
+    end
+  end
+
   def handle_request(%{method: :GET, path: _}, _) do
+    response(:not_found)
+  end
+
+  def handle_request(%{method: :HEAD, path: _}, _) do
     response(:not_found)
   end
 end
