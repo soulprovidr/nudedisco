@@ -29,6 +29,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=MuseoModerno&family=Roboto:ital,wght@0,300;0,700;1,300;1,700&display=swap" >
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
   <link rel="stylesheet" href="style.css">
+
+  <link rel="apple-touch-icon" href="apple-touch-icon.jpg">
   <link rel="icon" href="favicon.ico">
 
   <title>nudedisco: RSS-powered album review aggregator</title>
