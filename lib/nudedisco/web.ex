@@ -36,9 +36,9 @@ defmodule Nudedisco.Web do
         ]),
         Nudedisco.Templates.images_section([feeds.the_needledrop, 4]),
         Nudedisco.Templates.headlines_section([
-          [feeds.the_quietus, 10],
-          [feeds.backseat_mafia, 6],
-          [feeds.beatsperminute, 8]
+          [feeds.the_quietus, 8],
+          [feeds.backseat_mafia, 4],
+          [feeds.beatsperminute, 9]
         ])
       ])
     )
