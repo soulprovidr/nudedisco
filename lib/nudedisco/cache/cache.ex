@@ -19,4 +19,8 @@ defmodule Nudedisco.Cache do
          ]}
     }
   end
+
+  def get(key) do
+    Cachex.get!(@cache_table, key)
+  end
 end

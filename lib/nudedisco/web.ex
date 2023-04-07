@@ -17,7 +17,7 @@ defmodule Nudedisco.Web do
 
   @impl Raxx.SimpleServer
   def handle_request(%{method: :GET, path: []}, _) do
-    feeds = Cachex.get!(:cache, "feeds")
+    feeds = Nudedisco.Cache.get("feeds")
 
     response(:ok)
     |> set_header("content_type", "text/html")
