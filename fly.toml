@@ -1,8 +1,9 @@
-# fly.toml file generated for nudedisco on 2023-01-29T16:00:03-05:00
+# fly.toml file generated for nudedisco on 2023-03-20T21:04:53-04:00
 
 app = "nudedisco"
 kill_signal = "SIGINT"
 kill_timeout = 5
+primary_region = "yyz"
 processes = []
 
 [build]
