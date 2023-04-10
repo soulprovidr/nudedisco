@@ -2,7 +2,7 @@
 
 <%= if feed.items != nil do %>
 <section>
-  <h4><%= feed.name %></h4>
+  <h4><a href="<%= feed.site_url %>" target="_blank"><%= feed.name %></a></h4>
   <div class="row">
     <%= for item <- Enum.take(feed.items, count) do %>
       <div class="item cover column <%=feed.slug %>">

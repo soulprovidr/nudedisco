@@ -23,6 +23,7 @@ section {
 
 h4 a,
 h4 a:active,
+h4 a:hover,
 h4 a:visited {
   color: black;
 }
