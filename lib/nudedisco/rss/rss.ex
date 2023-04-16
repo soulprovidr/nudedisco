@@ -82,7 +82,7 @@ defmodule Nudedisco.RSS.Config do
         xpath(body, xpath_spec, xpath_subspec)
         |> Enum.map(&struct(Nudedisco.RSS.Item, &1))
 
-      Map.put(feed, :items, items)
+      %Nudedisco.RSS.Feed{feed | items: items}
     else
       :error ->
         IO.warn("Error reading " <> feed_url <> ".")
