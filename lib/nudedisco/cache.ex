@@ -4,7 +4,7 @@ defmodule Nudedisco.Cache do
 
   Provides a simple interface for caching data (`fetch`, `get`, and `put`).
 
-  The cache is a Cachex instance, and is configured to use the `:nudedisco` cache name.
+  The cache is a Cachex instance, and is configured to use `:nudedisco` as its cache name.
 
   The cache is also configured to use a `Nudedisco.RSS.CacheWarmer` warmer, which is responsible
   for hydrating and caching RSS feeds.
@@ -14,9 +14,8 @@ defmodule Nudedisco.Cache do
 
   @cache_name :nudedisco
 
-  @spec fetch(any, nil | fun, keyword) ::
-          {:commit, any} | {:error, any} | {:ignore, any} | {:ok, any} | {:commit, any, any}
-  def fetch(key, fallback, options) do
+  @spec fetch(any, any, keyword) :: any
+  def fetch(key, fallback, options \\ []) do
     Cachex.fetch(@cache_name, key, fallback, options)
   end
 

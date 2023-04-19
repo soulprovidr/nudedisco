@@ -18,7 +18,8 @@ defmodule Nudedisco.Util do
         :error
 
       {:error, error} ->
-        IO.inspect("[Nudedisco.Util.request] Request failed:")
+        IO.inspect("[Nudedisco.Util.request] Request failed.")
+        IO.inspect("URL: #{url}")
         IO.inspect(error)
         :error
     end

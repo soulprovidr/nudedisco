@@ -19,6 +19,7 @@ defmodule Nudedisco.RSS.Item do
   @moduledoc """
   A struct representing an RSS feed item.
   """
+  @derive {Poison.Encoder, except: [:date, :image]}
   defstruct [:title, :description, :url, :date, :image]
 
   @typedoc """

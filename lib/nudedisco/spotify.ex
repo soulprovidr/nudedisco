@@ -81,35 +81,48 @@ defmodule Nudedisco.Spotify do
   @spec get_access_token :: {:ok, String.t()} | :error
   defp get_access_token do
     result =
-      Cachex.fetch(:spotify_token, fn ->
-        with {:ok, {access_token, expires_in}} <- refresh_access_token() do
-          {:commit, access_token, ttl: expires_in}
-        else
-          :error ->
-            {:ignore, nil}
-        end
-      end)
+      Nudedisco.Cache.fetch(
+        :spotify_token,
+        fn ->
+          with {:ok, {access_token, expires_in}} <- refresh_access_token() do
+            {:commit, access_token, ttl: expires_in}
+          else
+            :error ->
+              {:ignore, nil}
+          end
+        end,
+        []
+      )
 
-    with {:commit, access_token, _ttl} <- result do
-      {:ok, access_token}
-    else
+    case result do
+      {:ok, access_token} ->
+        {:ok, access_token}
+
+      {:commit, access_token, _ttl} ->
+        {:ok, access_token}
+
       {:ignore, _} ->
         :error
     end
   end
 
+  @spec get_album_tracks(any) :: :error | {:ok, any}
+  def get_album_tracks(album_id) do
+    request(:get, "https://api.spotify.com/v1/albums/#{album_id}/tracks")
+  end
+
   # Make an authenticated request to the Spotify API.
-  @spec request(atom, String.t(), String.t() | nil, [{String.t(), String.t()}]) ::
+  @spec request(atom, String.t(), String.t(), [{String.t(), String.t()}]) ::
           {:ok, any} | :error
-  defp request(method, url, body, headers \\ []) do
+  defp request(method, url, body \\ "", headers \\ []) do
     with {:ok, access_token} <- get_access_token(),
          {:ok, body} <-
            Nudedisco.Util.request(method, url, body, [
              {"Authorization", "Bearer #{access_token}}"} | headers
            ]) do
-      {:ok, body}
+      {:ok, Poison.decode!(body)}
     else
-      :error ->
+      _ ->
         :error
     end
   end
@@ -149,12 +162,40 @@ defmodule Nudedisco.Spotify do
     end
   end
 
-  # Update a playlist's items.
-  @spec update_playlist_items(any, any) :: :error | {:ok, any}
-  def update_playlist_items(playlist_id, items) do
+  @doc """
+  Search for an item on Spotify.
+  See: https://developer.spotify.com/documentation/web-api/reference/search
+  """
+  @spec search(String.t(), String.t()) :: :error | {:ok, any}
+  def search(q, type) do
+    request(
+      :get,
+      "https://api.spotify.com/v1/search?" <>
+        URI.encode_query(%{
+          limit: 1,
+          q: q,
+          type: type
+        })
+    )
+  end
+
+  @doc """
+  Update the items in a playlist.
+  See: https://developer.spotify.com/documentation/web-api/reference/reorder-or-replace-playlists-tracks
+  """
+  @spec update_playlist_items(String.t(), [String.t()]) :: :error | {:ok, any}
+  def update_playlist_items(playlist_id, track_uris) do
     url = "https://api.spotify.com/v1/playlists/#{playlist_id}/tracks"
 
-    body = Poison.encode!(%{"uris" => items})
+    IO.inspect(track_uris)
+
+    body =
+      Poison.encode!(%{
+        # "insert_before" => 0,
+        # "playlist_id" => playlist_id,
+        # "range_start" => 0,
+        "uris" => track_uris
+      })
 
     with {:ok, body} <- request(:put, url, body) do
       IO.puts("[Spotify] Successfully updated playlist items.")
