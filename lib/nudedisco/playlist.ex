@@ -13,7 +13,39 @@ defmodule Nudedisco.Playlist do
   defp extract_metadata(items) do
     messages = [
       {"system",
-       "Using the data present in an array of JSON objects representing RSS feed items for music album reviews, provide a JSON array containing a list of JSON objects of the following form: [{album: '<album>', artist: '<artist>'}, ...]. Both the album and artist keys are required, and should not have associated values that represent null or undefined, such as 'N/A'. For any items where either the artist or album cannot be extracted or inferred, omit the corresponding object from the new list. In other words, only include objects where both album and artist are defined. Answer only with a JSON array and do not include any additional characters or text."},
+       "Using the data present in an array of JSON objects representing RSS feed items for music album reviews, provide a JSON array containing a list of JSON objects of the following form: [{album: '<album>', artist: '<artist>'}, ...].
+
+       Both the album and artist keys are required, and should not have associated values that represent null or undefined, such as 'N/A'. For any items where either the artist or album cannot be extracted or inferred, omit the corresponding object from the new list. In other words, only include objects where both album and artist are defined.
+
+       The following are examples of bad results:
+
+        - {'album': 'N/A', 'artist': 'N/A'}
+        - {'album': 'N/A', 'artist': 'The Beatles'}
+        - {'album': 'Abbey Road', 'artist': 'N/A'}
+        - {'album': 'Abbey Road'}
+        - {'artist': 'The Beatles'}
+
+       When the artist name takes the form '<name> and ...', '<name> & ...', or '<name> (...)', omit everything after '<name>'.
+
+       The following are examples of bad results:
+
+        - {'album': 'Abbey Road', 'artist': 'The Beatles and Friends'}
+        - {'album': 'Abbey Road', 'artist': 'The Beatles & Friends'}
+        - {'album': 'Abbey Road', 'artist': 'The Beatles & The Other Guys'}
+        - {'album': 'Abbey Road', 'artist': 'The Beatles (and Friends)'}
+
+       Convert all special characters, such as 'ì' to their closest English equivalents.
+
+       The following are examples of bad results:
+
+        - [{'album': 'Abbey Road', 'artist': 'The Béatles'}]
+        - [{'album': 'Äbbey Road', 'artist': 'The Beatles'}]
+
+       Answer only with a JSON array and do not include any additional characters or text.
+
+       The following is an example of the expected result:
+
+        - [{'album': 'Abbey Road', 'artist': 'The Beatles'}]"},
       {"user", Poison.encode!(items)}
     ]
 
@@ -28,7 +60,7 @@ defmodule Nudedisco.Playlist do
   @spec get_album_id(metadata) :: String.t() | nil
   defp get_album_id(metadata_item) do
     %{album: album, artist: artist} = metadata_item
-    q = "artist:#{artist} album:#{album}"
+    q = "#{artist} #{album}"
 
     with {:ok, body} <- Nudedisco.Spotify.search(q, "album") do
       List.first(body["albums"]["items"])["id"]
@@ -46,7 +78,6 @@ defmodule Nudedisco.Playlist do
       ordered: false,
       timeout: 30 * 1000
     )
-    |> Enum.to_list()
     |> Enum.map(fn {:ok, id} -> id end)
     |> Enum.reject(&is_nil/1)
   end
@@ -62,13 +93,12 @@ defmodule Nudedisco.Playlist do
           list(metadata)
   defp get_metadata_items(feed_items) do
     feed_items
-    |> Enum.chunk_every(10)
+    |> Enum.chunk_every(5)
     |> Task.async_stream(
       &extract_metadata/1,
       ordered: false,
       timeout: 30 * 1000
     )
-    |> Enum.to_list()
     |> Enum.map(fn {:ok, items} -> items end)
     |> List.flatten()
     |> Enum.reject(&has_nil_metadata_values/1)

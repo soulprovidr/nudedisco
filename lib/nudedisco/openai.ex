@@ -53,7 +53,7 @@ defmodule Nudedisco.OpenAI do
       {"Content-Type", "application/json"}
     ]
 
-    with {:ok, body} <- Nudedisco.Util.request(:post, url, body, headers) do
+    with {:ok, body} <- Nudedisco.Util.request(:post, url, body, headers, recv_timeout: 30 * 1000) do
       body = Poison.decode!(body)
       content = List.first(body["choices"])["message"]["content"]
 

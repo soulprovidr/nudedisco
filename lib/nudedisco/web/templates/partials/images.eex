@@ -1,4 +1,4 @@
-<% [feed, count] = feed_config %>
+<% {feed, count} = feed_tuple %>
 
 <%= if feed.items != nil do %>
 <section>

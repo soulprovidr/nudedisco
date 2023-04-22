@@ -186,16 +186,7 @@ defmodule Nudedisco.Spotify do
   @spec update_playlist_items(String.t(), [String.t()]) :: :error | {:ok, any}
   def update_playlist_items(playlist_id, track_uris) do
     url = "https://api.spotify.com/v1/playlists/#{playlist_id}/tracks"
-
-    IO.inspect(track_uris)
-
-    body =
-      Poison.encode!(%{
-        # "insert_before" => 0,
-        # "playlist_id" => playlist_id,
-        # "range_start" => 0,
-        "uris" => track_uris
-      })
+    body = Poison.encode!(%{"uris" => track_uris})
 
     with {:ok, body} <- request(:put, url, body) do
       IO.puts("[Spotify] Successfully updated playlist items.")

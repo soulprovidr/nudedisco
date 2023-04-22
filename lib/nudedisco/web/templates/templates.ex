@@ -9,7 +9,7 @@ defmodule Nudedisco.Web.Templates do
     :def,
     :headlines_section,
     "lib/nudedisco/web/templates/partials/headlines.eex",
-    [:feed_configs]
+    [:feed_tuples]
   )
 
   EEx.function_from_file(
@@ -17,7 +17,7 @@ defmodule Nudedisco.Web.Templates do
     :images_section,
     "lib/nudedisco/web/templates/partials/images.eex",
     [
-      :feed_config
+      :feed_tuple
     ]
   )
 end

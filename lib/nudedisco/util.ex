@@ -6,8 +6,8 @@ defmodule Nudedisco.Util do
   """
   @spec request(:delete | :get | :head | :options | :patch | :post | :put, binary, any, any) ::
           :error | {:ok, any}
-  def request(method, url, body \\ "", headers \\ []) do
-    case HTTPoison.request(method, url, body, headers) do
+  def request(method, url, body \\ "", headers \\ [], options \\ []) do
+    case HTTPoison.request(method, url, body, headers, options) do
       {:ok, %HTTPoison.Response{status_code: status_code, body: body}}
       when status_code in 200..299 ->
         {:ok, body}
