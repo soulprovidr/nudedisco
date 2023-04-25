@@ -35,6 +35,7 @@ defmodule Nudedisco.MixProject do
       {:raxx, "~> 1.1"},
       {:httpoison, "~> 1.8"},
       {:poison, "~> 5.0"},
+      {:quantum, "~> 3.0"},
       {:sweet_xml, "~> 0.7.1"}
     ]
   end

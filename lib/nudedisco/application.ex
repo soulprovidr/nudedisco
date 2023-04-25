@@ -8,7 +8,8 @@ defmodule Nudedisco.Application do
     children = [
       {Nudedisco.Cache, name: :nudedisco_cache},
       {Nudedisco.Web, name: :nudedisco_web},
-      {Nudedisco.Spotify, name: :nudedisco_spotify}
+      {Nudedisco.Spotify, name: :nudedisco_spotify},
+      {Nudedisco.Scheduler, name: :nudedisco_scheduler}
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one)

@@ -143,7 +143,8 @@ defmodule Nudedisco.Playlist do
     Nudedisco.Spotify.update_playlist_items(playlist_id, track_uris)
   end
 
-  def build do
+  @spec update :: :error | {:ok, any}
+  def update do
     get_feed_items()
     |> get_metadata_items()
     |> get_album_ids()
