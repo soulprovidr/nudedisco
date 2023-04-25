@@ -103,7 +103,7 @@ defmodule Nudedisco.Playlist do
     |> List.flatten()
     |> Enum.reject(&has_nil_metadata_values/1)
     |> Enum.uniq_by(fn m ->
-      {String.downcase(m.artist), String.downcase(m.album)}
+      String.downcase(m.artist)
     end)
   end
 

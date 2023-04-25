@@ -32,6 +32,25 @@ h4 a:hover {
   text-decoration: underline;
 }
 
+.button {
+  background: #1b2940;
+  border-color: #1b2940;
+}
+
+.playlist {
+  display: flex;
+  font-size: 16px;
+  gap: 18px;
+}
+
+.playlist .icon.mobile {
+  display: none;
+}
+
+.playlist h4 {
+  margin-bottom: 8px;
+}
+
 .item a,
 .item a:active {
   color: #1b2940;
@@ -52,7 +71,7 @@ h4 a:hover {
 
 .item.link {
   border-bottom: 1px dotted #ddd;
-  padding: 4px 0; 
+  padding: 4px 0;
 }
 
 .item.link:last-of-type {
@@ -81,7 +100,7 @@ footer {
   justify-content: flex-end;
   align-items: center;
   font-size: 13px;
-  letter-spacing: -.08px;
+  letter-spacing: -0.08px;
   padding: 24px 0;
 }
 
@@ -107,7 +126,25 @@ footer {
   transform: scale(1.1);
 }
 
-@media screen and (max-width: 40.0rem) {
+@media screen and (max-width: 40rem) {
+  .playlist .icon.desktop {
+    display: none;
+  }
+
+  .playlist .icon.mobile {
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: sub;
+  }
+
+  .playlist h4 {
+    display: inline-block;
+  }
+
+  .playlist .button {
+    width: 100%;
+  }
+
   .column {
     margin-bottom: 24px;
   }

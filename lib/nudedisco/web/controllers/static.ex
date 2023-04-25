@@ -17,7 +17,7 @@ defmodule Nudedisco.Web.Controllers.Static do
   def handle_request(request = %{method: :GET, path: [_rest]}, _) do
     with {:ok, file, mime_type} <- read_file_from_path(request.path) do
       response(:ok)
-      |> set_header("content_type", mime_type)
+      |> set_header("content-type", mime_type)
       |> set_body(file)
     else
       {:error, :enoent} -> response(:not_found)

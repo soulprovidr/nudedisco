@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="RSS-powered album reviews aggregator." />
+    <meta name="image" content="https://nudedis.co/preview.jpg" />
+
+    <meta itemprop="name" content="nudedisco" />
+    <meta
+      itemprop="description"
+      content="RSS-powered album reviews aggregator."
+    />
+    <meta itemprop="image" content="https://nudedis.co/preview.jpg" />
+
+    <meta property="twitter:card" content="summary" />
+    <meta property="twitter:title" content="nudedisco" />
+    <meta
+      property="twitter:description"
+      content="RSS-powered album reviews aggregator."
+    />
+    <meta property="twitter:site" content="@soulprovidrfm" />
+    <meta
+      property="twitter:image:src"
+      content="https://nudedis.co/preview.jpg"
+    />
+
+    <meta property="og:title" content="nudedisco" />
+    <meta
+      property="og:description"
+      content="RSS-powered album reviews aggregator."
+    />
+    <meta property="og:image" content="https://nudedis.co/preview.jpg" />
+    <meta property="og:url" content="https://nudedis.co" />
+    <meta property="og:site_name" content="nudedisco" />
+    <meta property="og:type" content="website" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=MuseoModerno&family=Roboto:ital,wght@0,300;0,700;1,300;1,700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+
+    <link rel="apple-touch-icon" href="apple-touch-icon.jpg" />
+    <link rel="icon" href="favicon.ico" />
+
+    <title>nudedisco: RSS-powered album review aggregator</title>
+  </head>
+  <body>
+    <div class="container">
+      <header>nudedisco</header>
+      <section class="playlist">
+        <img
+          class="icon desktop"
+          height="48"
+          src="spotify.svg"
+          width="48"
+        />
+        <div>
+          <img
+            class="icon mobile"
+            height="24"
+            src="spotify.svg"
+            width="24"
+          />
+          <h4>Fresh Fridays on Spotify</h4>
+          <p>
+            Discover new artists and albums reviewed by some of the Internet's
+            top music blogs and publications &mdash; including Pitchfork, The Guardian,
+            &amp; many more &mdash; on the official nudedisco playlist. Updated every
+            Friday.
+          </p>
+          <a
+            class="button"
+            href="https://open.spotify.com/playlist/3FxuIvXkD3JvLKstWBLfff?si=373af23c5c3b48ad"
+            target="_blank"
+          >
+            Listen Now
+          </a>
+        </div>
+      </section>
+
+      <%= Enum.join(sections) %>
+
+      <footer>
+        <a
+          class="powered-by"
+          alt=""
+          href="https://soulprovidr.fm"
+          target="_blank"
+        >
+          <img src="sp-logo.png" />
+          <span> Powered by Soul Provider® </span>
+        </a>
+      </footer>
+    </div>
+    <script type="text/javascript">
+      // Prevent iframes from loading scripts.
+      Array.from(window.frames).forEach((f) => f.stop());
+    </script>
+    <script
+      defer
+      data-domain="nudedis.co"
+      src="https://plausible.io/js/script.js"
+    ></script>
+  </body>
+</html>
