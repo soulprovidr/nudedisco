@@ -16,6 +16,7 @@ defmodule Nudedisco.MixProject do
       extra_applications: [:logger],
       env: [
         openai_api_key: nil,
+        port: 8080,
         spotify_client_id: nil,
         spotify_client_secret: nil,
         spotify_playlist_id: nil,

@@ -90,14 +90,6 @@ defmodule Nudedisco.RSS.Config do
         feed
     end
   end
-
-  @doc """
-  Returns a Task that will hydrate an RSS feed from a given RSS feed configuration.
-  """
-  @spec hydrate_async(Nudedisco.RSS.Config.t()) :: Task.t()
-  def hydrate_async(%Nudedisco.RSS.Config{} = config) do
-    Task.async(fn -> hydrate(config) end)
-  end
 end
 
 defmodule Nudedisco.RSS do
@@ -235,8 +227,11 @@ defmodule Nudedisco.RSS do
   @spec hydrate_feeds :: list({atom(), Nudedisco.RSS.Feed.t()})
   def hydrate_feeds do
     @feed_configs
-    |> Enum.map(&Nudedisco.RSS.Config.hydrate_async/1)
-    |> Enum.map(&Task.await/1)
-    |> Enum.map(fn feed -> {feed.slug, feed} end)
+    |> Task.async_stream(
+      &Nudedisco.RSS.Config.hydrate/1,
+      ordered: false,
+      timeout: 30 * 1000
+    )
+    |> Enum.map(fn {:ok, feed} -> {feed.slug, feed} end)
   end
 end

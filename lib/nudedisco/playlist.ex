@@ -125,7 +125,6 @@ defmodule Nudedisco.Playlist do
       ordered: false,
       timeout: 30 * 1000
     )
-    |> Enum.to_list()
     |> Enum.map(fn {:ok, id} -> id end)
     |> Enum.reject(&is_nil/1)
   end

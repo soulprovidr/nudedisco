@@ -32,8 +32,3 @@ config :nudedisco,
   spotify_client_secret: spotify_client_secret,
   spotify_playlist_id: spotify_playlist_id,
   spotify_redirect_uri: spotify_redirect_uri
-
-config :nudedisco, Nudedisco.Scheduler,
-  jobs: [
-    {"0 7 * * 5", {Nudedisco.Playlist, :update_playlist, []}}
-  ]

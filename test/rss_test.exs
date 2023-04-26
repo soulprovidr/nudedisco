@@ -1,4 +1,4 @@
-defmodule NudediscoTest do
+defmodule RSSTest do
   use ExUnit.Case, async: true
 
   defp assert_feed(feed) do
@@ -18,8 +18,16 @@ defmodule NudediscoTest do
     assert is_bitstring(map.date)
   end
 
-  test "fetches feeds" do
-    feeds = Nudedisco.get_feeds()
+  test "cache populated when application starts" do
+    feeds = Nudedisco.RSS.get_feeds()
+
+    for {_k, v} <- feeds do
+      assert_feed(v)
+    end
+  end
+
+  test "hydrates RSS feeds appropriately" do
+    feeds = Nudedisco.RSS.hydrate_feeds()
 
     for {_k, v} <- feeds do
       assert_feed(v)

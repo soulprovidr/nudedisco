@@ -2,7 +2,11 @@ defmodule Nudedisco.Web do
   @moduledoc """
   Handles all HTTP requests and serves the web app.
   """
-  use Ace.HTTP.Service, port: 8080, cleartext: true
+
+  use Ace.HTTP.Service,
+    port: Application.compile_env(:nudedisco, :port),
+    cleartext: true
+
   use Raxx.Router
 
   alias Nudedisco.Web.Controllers.Home, as: HomeController
