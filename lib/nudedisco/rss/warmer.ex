@@ -3,8 +3,13 @@ defmodule Nudedisco.RSS.CacheWarmer do
 
   def interval, do: :timer.hours(1)
 
+  # Returns the list of hydrated RSS feeds that should be cached when the cache warmer is executed.
+  # Empty feeds are are not cached as there may be a previously-cached feed available that can be used instead.
   def execute(_args) do
-    # TODO: Only update feeds that have items.
-    {:ok, Nudedisco.RSS.hydrate_feeds()}
+    feeds =
+      Nudedisco.RSS.hydrate_feeds()
+      |> Enum.reject(fn {_k, v} -> v.items == nil end)
+
+    {:ok, feeds}
   end
 end

@@ -54,10 +54,24 @@ defmodule Nudedisco.RSS.Config do
 
   @doc """
   Fetches a hydrated RSS feed from the cache.
+
+  If the feed is not in the cache, returns a new feed with no items.
   """
   @spec fetch(Nudedisco.RSS.Config.t()) :: Nudedisco.RSS.Feed.t() | nil
   def fetch(%Nudedisco.RSS.Config{} = config) do
-    Nudedisco.Cache.get(config.slug)
+    case Nudedisco.Cache.get(config.slug) do
+      nil ->
+        %{
+          name: name,
+          site_url: site_url,
+          slug: slug
+        } = config
+
+        %Nudedisco.RSS.Feed{name: name, site_url: site_url, slug: slug, items: nil}
+
+      feed ->
+        feed
+    end
   end
 
   @doc """
