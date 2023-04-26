@@ -8,7 +8,7 @@ defmodule Nudedisco.Web.Controllers.Home do
     feeds = Nudedisco.RSS.get_feeds()
 
     response(:ok)
-    |> set_header("content_type", "text/html")
+    |> set_header("content-type", "text/html")
     |> set_body(
       Templates.index([
         Templates.headlines_section([
@@ -34,7 +34,7 @@ defmodule Nudedisco.Web.Controllers.Home do
 
   def handle_request(%{method: :GET, path: ["about"]}, _) do
     response(:ok)
-    |> set_header("content_type", "text/html")
+    |> set_header("content-type", "text/html")
     |> set_body("About")
   end
 end
