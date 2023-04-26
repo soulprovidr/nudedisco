@@ -11,6 +11,11 @@ on:
 
 env:
   MIX_ENV: test
+  OPENAI_API_KEY: 1234567890
+  SPOTIFY_CLIENT_ID: 1234567890
+  SPOTIFY_CLIENT_SECRET: 1234567890
+  SPOTIFY_PLAYLIST_ID: 3FxuIvXkD3JvLKstWBLfff
+  SPOTIFY_REDIRECT_URI: http://localhost:8080/spotify/callback
 
 permissions:
   contents: read
