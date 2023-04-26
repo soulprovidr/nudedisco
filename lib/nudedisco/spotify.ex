@@ -10,7 +10,7 @@ defmodule Nudedisco.Spotify do
   After authorizing the application, Spotify will redirect to the `redirect_uri` with a `code` query parameter. This code is used to obtain an `access_token` and `refresh_token` via the `handle_authorization/1` function.
 
   ## Caching
-  After authorization, the Spotify `access_token` is cached in the `:nudedisco_cache` process and expires after the amount of time specified by the `expires_in` property, which is returned . The `refresh_token` is stored in the application environment. Once the `access_token` expires, it is automatically refreshed using the `refresh_token` and the new `access_token` is cached when the `get_access_token/0` function is called.
+  After authorization, the Spotify `access_token` is cached in the `:nudedisco_cache` process and expires after the amount of time specified by the `expires_in` property, which is returned by the API alongside the `access_token` and `refresh_token`. The `refresh_token` is stored in the application environment. Once the `access_token` expires, it is automatically refreshed using the `refresh_token` and the new `access_token` is cached when the `get_access_token/0` function is called.
 
   ## API
   The Spotify API is accessed via the `request/3` function. This function takes a method, path, and body and returns the response body as a string. The `access_token` is automatically added to the request headers.
