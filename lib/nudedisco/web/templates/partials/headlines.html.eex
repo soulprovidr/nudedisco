@@ -1,6 +1,6 @@
 <section>
   <div class="row">
-    <%= for [feed, count] <- feed_configs do %>
+    <%= for {feed, count} <- feed_tuples do %>
       <%= if feed.items != nil do %>
       <div class="column">
         <h4><a href="<%= feed.site_url %>" target="_blank"><%= feed.name %></a></h4>
