@@ -7,6 +7,6 @@ config :nudedisco, Nudedisco.Scheduler,
   jobs: [
     update_playlist: [
       schedule: "0 7 * * 5",
-      task: {Nudedisco.Playlist, :update_playlist, []}
+      task: {Nudedisco.Playlist, :update, []}
     ]
   ]
