@@ -232,6 +232,7 @@ defmodule Nudedisco.RSS do
   def get_feeds do
     @feed_configs
     |> Enum.map(&Nudedisco.RSS.Config.fetch/1)
+    |> Enum.reject(fn feed -> is_nil(feed.items) end)
     |> Enum.into(%{}, fn feed -> {feed.slug, feed} end)
   end
 
