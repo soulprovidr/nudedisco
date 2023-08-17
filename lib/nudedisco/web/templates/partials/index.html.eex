@@ -108,7 +108,7 @@
     <script
       defer
       data-domain="nudedis.co"
-      src="https://plausible.io/js/script.js"
-    ></script>
+      src="https://analytics.amnoob.cool/js/script.js">
+    </script>
   </body>
 </html>
