@@ -12,21 +12,21 @@ defmodule Nudedisco.Web.Controllers.Home do
     |> set_body(
       Templates.index([
         Templates.headlines_section([
-          {feeds.bandcamp, 8},
-          {feeds.the_guardian, 6},
-          {feeds.npr, 6}
+          {Map.get(feeds, :bandcamp), 8},
+          {Map.get(feeds, :the_guardian), 6},
+          {Map.get(feeds, :npr), 6}
         ]),
-        Templates.images_section({feeds.pitchfork, 4}),
+        Templates.images_section({Map.get(feeds, :pitchfork), 4}),
         Templates.headlines_section([
-          {feeds.nme, 6},
-          {feeds.rolling_stone, 6},
-          {feeds.popmatters, 7}
+          {Map.get(feeds, :nme), 6},
+          {Map.get(feeds, :rolling_stone), 6},
+          {Map.get(feeds, :popmatters), 7}
         ]),
-        Templates.images_section({feeds.the_needledrop, 4}),
+        Templates.images_section({Map.get(feeds, :the_needledrop), 4}),
         Templates.headlines_section([
-          {feeds.the_quietus, 9},
-          {feeds.backseat_mafia, 5},
-          {feeds.beatsperminute, 8}
+          {Map.get(feeds, :the_quietus), 9},
+          {Map.get(feeds, :backseat_mafia), 5},
+          {Map.get(feeds, :beatsperminute), 8}
         ])
       ])
     )

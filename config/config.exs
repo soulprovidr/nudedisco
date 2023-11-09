@@ -5,7 +5,11 @@ config :nudedisco,
 
 config :nudedisco, Nudedisco.Scheduler,
   jobs: [
-    update_playlist: [
+    rss_sync: [
+      schedule: "@hourly",
+      task: {Nudedisco.RSS, :sync_feeds, []}
+    ],
+    playlist_update: [
       schedule: "0 7 * * 5",
       task: {Nudedisco.Playlist, :update, []}
     ]

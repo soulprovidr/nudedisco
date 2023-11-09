@@ -3,7 +3,7 @@ defmodule PlaylistTest do
 
   test "schedules a playlist update job for 7am on Fridays" do
     import Crontab.CronExpression
-    job = Nudedisco.Scheduler.find_job(:update_playlist)
+    job = Nudedisco.Scheduler.find_job(:playlist_update)
     assert job != nil
     assert job.schedule == ~e"0 7 * * 5"
   end

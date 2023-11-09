@@ -135,11 +135,11 @@ defmodule Nudedisco.Playlist do
       is_nil(metadata.album) || is_nil(metadata.artist)
   end
 
-  # Updates the Spotify playlist with the given track URIs.
-  @spec update_playlist_items(list(String.t())) :: {:ok, any} | :error
-  defp update_playlist_items(track_uris) do
+  # Adds the provided track URIs to the Spotify playlist, replacing any previous tracks.
+  @spec set_playlist_tracks(list(String.t())) :: {:ok, any} | :error
+  defp set_playlist_tracks(track_uris) do
     playlist_id = Application.get_env(:nudedisco, :spotify_playlist_id)
-    Nudedisco.Spotify.update_playlist_items(playlist_id, track_uris)
+    Nudedisco.Spotify.set_playlist_tracks(playlist_id, track_uris)
   end
 
   @spec update :: :error | {:ok, any}
@@ -148,6 +148,6 @@ defmodule Nudedisco.Playlist do
     |> get_metadata_items()
     |> get_album_ids()
     |> get_track_uris()
-    |> update_playlist_items()
+    |> set_playlist_tracks()
   end
 end

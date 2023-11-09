@@ -65,7 +65,7 @@ defmodule Nudedisco.Spotify do
       } = Poison.decode!(body)
 
       # Set the access token in the cache.
-      Nudedisco.Cache.put(:spotify_token, access_token, ttl: expires_in)
+      Nudedisco.Cache.put!(:spotify_token, access_token, ttl: expires_in)
 
       # Set the refresh token in the application environment.
       Application.put_env(:nudedisco, :spotify_refresh_token, refresh_token)
@@ -183,8 +183,8 @@ defmodule Nudedisco.Spotify do
   Update the items in a playlist.
   See: https://developer.spotify.com/documentation/web-api/reference/reorder-or-replace-playlists-tracks
   """
-  @spec update_playlist_items(String.t(), [String.t()]) :: :error | {:ok, any}
-  def update_playlist_items(playlist_id, track_uris) do
+  @spec set_playlist_tracks(String.t(), [String.t()]) :: :error | {:ok, any}
+  def set_playlist_tracks(playlist_id, track_uris) do
     url = "https://api.spotify.com/v1/playlists/#{playlist_id}/tracks"
     body = Poison.encode!(%{"uris" => track_uris})
 

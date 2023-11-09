@@ -5,13 +5,15 @@ defmodule Nudedisco.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      {Nudedisco.Cache, name: :nudedisco_cache},
-      {Nudedisco.Web, name: :nudedisco_web},
-      {Nudedisco.Spotify, name: :nudedisco_spotify},
-      {Nudedisco.Scheduler, name: :nudedisco_scheduler}
-    ]
-
-    Supervisor.start_link(children, strategy: :one_for_one)
+    Supervisor.start_link(
+      [
+        {Nudedisco.Cache, name: :nudedisco_cache},
+        {Nudedisco.RSS, name: :nudedisco_rss},
+        {Nudedisco.Web, name: :nudedisco_web},
+        {Nudedisco.Spotify, name: :nudedisco_spotify},
+        {Nudedisco.Scheduler, name: :nudedisco_scheduler}
+      ],
+      strategy: :one_for_one
+    )
   end
 end

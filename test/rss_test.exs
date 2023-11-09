@@ -18,16 +18,8 @@ defmodule RSSTest do
     assert is_bitstring(map.date)
   end
 
-  test "cache populated when application starts" do
+  test "applications starts -> feeds populated" do
     feeds = Nudedisco.RSS.get_feeds()
-
-    for {_k, v} <- feeds do
-      assert_feed(v)
-    end
-  end
-
-  test "hydrates RSS feeds appropriately" do
-    feeds = Nudedisco.RSS.hydrate_feeds()
 
     for {_k, v} <- feeds do
       assert_feed(v)
