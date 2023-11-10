@@ -16,12 +16,17 @@ defmodule Nudedisco.Spotify do
   The Spotify API is accessed via the `request/3` function. This function takes a method, path, and body and returns the response body as a string. The `access_token` is automatically added to the request headers.
   """
 
-  use Task
+  use GenServer
+
+  def init(_) do
+    authorize()
+    {:ok, nil}
+  end
 
   @spec authorize :: :ok
   def authorize do
-    client_id = Application.get_env(:nudedisco, :spotify_client_id)
-    redirect_uri = Application.get_env(:nudedisco, :spotify_redirect_uri)
+    client_id = Nudedisco.Spotify.Constants.client_id()
+    redirect_uri = Nudedisco.Spotify.Constants.redirect_uri()
 
     query = %{
       client_id: client_id,
@@ -42,9 +47,9 @@ defmodule Nudedisco.Spotify do
   """
   @spec handle_authorization(String.t()) :: :ok | :error
   def handle_authorization(code) do
-    client_id = Application.get_env(:nudedisco, :spotify_client_id)
-    client_secret = Application.get_env(:nudedisco, :spotify_client_secret)
-    redirect_uri = Application.get_env(:nudedisco, :spotify_redirect_uri)
+    client_id = Nudedisco.Spotify.Constants.client_id()
+    client_secret = Nudedisco.Spotify.Constants.client_secret()
+    redirect_uri = Nudedisco.Spotify.Constants.redirect_uri()
 
     url = "https://accounts.spotify.com/api/token"
 
@@ -131,8 +136,8 @@ defmodule Nudedisco.Spotify do
   # Set the `refresh_token` in the application environment and return the new `access_token` (and `expires_in` value).
   @spec refresh_access_token :: {:ok, {String.t(), integer}} | :error
   defp refresh_access_token do
-    client_id = Application.get_env(:nudedisco, :spotify_client_id)
-    client_secret = Application.get_env(:nudedisco, :spotify_client_secret)
+    client_id = Nudedisco.Spotify.Constants.client_id()
+    client_secret = Nudedisco.Spotify.Constants.client_secret()
     refresh_token = Application.get_env(:nudedisco, :spotify_refresh_token)
 
     url = "https://accounts.spotify.com/api/token"
@@ -198,8 +203,7 @@ defmodule Nudedisco.Spotify do
     end
   end
 
-  @spec start_link(any) :: {:ok, pid}
   def start_link(_) do
-    Task.start_link(__MODULE__, :authorize, [])
+    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
 end
