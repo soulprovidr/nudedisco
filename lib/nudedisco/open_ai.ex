@@ -59,7 +59,7 @@ defmodule Nudedisco.OpenAI do
 
       usage = body["usage"]
       total_cost = get_cost(usage["total_tokens"])
-      IO.puts("[OpenAI]: Used #{usage["total_tokens"]} tokens ($#{total_cost})")
+      IO.puts("[OpenAI] Used #{usage["total_tokens"]} tokens ($#{total_cost})")
       {:ok, content}
     else
       :error ->
