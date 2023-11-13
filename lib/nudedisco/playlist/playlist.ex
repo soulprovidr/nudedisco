@@ -74,7 +74,7 @@ defmodule Nudedisco.Playlist do
   @spec get_feed_items() :: list(RSS.Item.t())
   defp get_feed_items() do
     RSS.get_feeds()
-    |> Enum.map(fn {_k, feed} -> Enum.take(feed.items, 1) end)
+    |> Enum.map(fn {_k, feed} -> Enum.take(feed.items, 5) end)
     |> List.flatten()
   end
 
