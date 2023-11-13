@@ -150,7 +150,6 @@ defmodule Nudedisco.Playlist do
   @spec sync! :: boolean()
   def sync! do
     playlist_items = get_playlist_items()
-    IO.inspect(playlist_items)
     track_uris = Enum.map(playlist_items, & &1.track_uri)
 
     case Spotify.set_playlist_tracks(Playlist.Constants.playlist_id(), track_uris) do
