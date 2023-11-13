@@ -1,16 +1,20 @@
 import Config
 
+alias Nudedisco.Playlist
+alias Nudedisco.RSS
+alias Nudedisco.Scheduler
+
 config :nudedisco,
   port: 8080
 
-config :nudedisco, Nudedisco.Scheduler,
+config :nudedisco, Scheduler,
   jobs: [
+    playlist_sync: [
+      schedule: "0 7 * * 5",
+      task: {Playlist, :sync!, []}
+    ],
     rss_sync: [
       schedule: "@hourly",
-      task: {Nudedisco.RSS, :sync_feeds!, []}
-    ],
-    playlist_update: [
-      schedule: "0 7 * * 5",
-      task: {Nudedisco.Playlist, :update, []}
+      task: {RSS, :sync!, []}
     ]
   ]

@@ -20,8 +20,7 @@ defmodule Nudedisco.MixProject do
         spotify_client_id: nil,
         spotify_client_secret: nil,
         spotify_playlist_id: nil,
-        spotify_redirect_uri: nil,
-        spotify_refresh_token: nil
+        spotify_redirect_uri: nil
       ],
       mod: {Nudedisco.Application, []}
     ]

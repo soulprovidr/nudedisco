@@ -14,7 +14,7 @@ defmodule Nudedisco.OpenAI do
   """
 
   # Calculate the rough cost of a request to OpenAI's GPT-3 API.
-  @spec get_cost(integer) :: float
+  @spec get_cost(integer()) :: float
   defp get_cost(tokens) do
     Float.round(tokens / 1000 * 0.002, 3)
   end
@@ -54,12 +54,18 @@ defmodule Nudedisco.OpenAI do
     ]
 
     with {:ok, body} <- Nudedisco.Util.request(:post, url, body, headers, recv_timeout: 30 * 1000) do
-      body = Poison.decode!(body)
-      content = List.first(body["choices"])["message"]["content"]
+      decoded_body = Poison.decode!(body)
 
-      usage = body["usage"]
-      total_cost = get_cost(usage["total_tokens"])
-      IO.puts("[OpenAI] Used #{usage["total_tokens"]} tokens ($#{total_cost})")
+      content =
+        Map.get(decoded_body, "choices")
+        |> List.first()
+        |> Map.get("message")
+        |> Map.get("content")
+
+      usage = Map.get(decoded_body, "usage")
+      total_tokens = Map.get(usage, "total_tokens")
+      total_cost = get_cost(total_tokens)
+      IO.puts("[OpenAI] Used #{total_tokens} tokens ($#{total_cost})")
       {:ok, content}
     else
       :error ->

@@ -1,6 +1,8 @@
 defmodule Nudedisco.RSS.Constants do
   import SweetXml
 
+  alias Nudedisco.RSS
+
   @default_xpath_spec ~x"//item"l
   @default_xpath_subspec [
     title: ~x"./title/text()"s,
@@ -10,7 +12,7 @@ defmodule Nudedisco.RSS.Constants do
   ]
 
   @feed_configs [
-    %Nudedisco.RSS.Config{
+    %RSS.Config{
       name: "Backseat Mafia",
       feed_url: "https://www.backseatmafia.com/category/album-reviews/feed/",
       site_url: "https://www.backseatmafia.com/category/album-reviews/",
@@ -18,7 +20,7 @@ defmodule Nudedisco.RSS.Constants do
       xpath_spec: @default_xpath_spec,
       xpath_subspec: @default_xpath_subspec
     },
-    %Nudedisco.RSS.Config{
+    %RSS.Config{
       name: "Bandcamp Daily",
       feed_url: "https://daily.bandcamp.com/feed",
       site_url: "https://daily.bandcamp.com",
@@ -26,7 +28,7 @@ defmodule Nudedisco.RSS.Constants do
       xpath_spec: @default_xpath_spec,
       xpath_subspec: @default_xpath_subspec
     },
-    %Nudedisco.RSS.Config{
+    %RSS.Config{
       name: "Beats Per Minute",
       feed_url: "https://beatsperminute.com/category/reviews/album-reviews/feed/",
       site_url: "https://beatsperminute.com/category/reviews/album-reviews/",
@@ -34,7 +36,7 @@ defmodule Nudedisco.RSS.Constants do
       xpath_spec: @default_xpath_spec,
       xpath_subspec: @default_xpath_subspec
     },
-    %Nudedisco.RSS.Config{
+    %RSS.Config{
       name: "The Guardian",
       feed_url: "https://www.theguardian.com/music+tone/albumreview/rss",
       site_url: "https://www.theguardian.com/music+tone/albumreview",
@@ -42,7 +44,7 @@ defmodule Nudedisco.RSS.Constants do
       xpath_spec: @default_xpath_spec,
       xpath_subspec: @default_xpath_subspec
     },
-    %Nudedisco.RSS.Config{
+    %RSS.Config{
       name: "The Needledrop",
       feed_url: "https://www.theneedledrop.com/articles?format=rss",
       site_url: "https://www.theneedledrop.com/articles",
@@ -56,7 +58,7 @@ defmodule Nudedisco.RSS.Constants do
         date: ~x"./pubDate/text()"s
       ]
     },
-    %Nudedisco.RSS.Config{
+    %RSS.Config{
       name: "NME",
       feed_url: "https://www.nme.com/reviews/album/feed",
       site_url: "https://www.nme.com/reviews/album",
@@ -64,7 +66,7 @@ defmodule Nudedisco.RSS.Constants do
       xpath_spec: @default_xpath_spec,
       xpath_subspec: @default_xpath_subspec
     },
-    %Nudedisco.RSS.Config{
+    %RSS.Config{
       name: "NPR",
       feed_url: "https://feeds.npr.org/1104/rss.xml",
       site_url: "https://www.npr.org/sections/music-reviews/",
@@ -72,7 +74,7 @@ defmodule Nudedisco.RSS.Constants do
       xpath_spec: @default_xpath_spec,
       xpath_subspec: @default_xpath_subspec
     },
-    %Nudedisco.RSS.Config{
+    %RSS.Config{
       name: "Pitchfork",
       feed_url: "https://pitchfork.com/feed/feed-album-reviews/rss",
       site_url: "https://pitchfork.com/reviews/albums/",
@@ -86,7 +88,7 @@ defmodule Nudedisco.RSS.Constants do
         date: ~x"./pubDate/text()"s
       ]
     },
-    %Nudedisco.RSS.Config{
+    %RSS.Config{
       name: "PopMatters",
       feed_url: "https://www.popmatters.com/category/music-reviews/feed",
       site_url: "https://www.popmatters.com/category/music-reviews",
@@ -94,7 +96,7 @@ defmodule Nudedisco.RSS.Constants do
       xpath_spec: @default_xpath_spec,
       xpath_subspec: @default_xpath_subspec
     },
-    %Nudedisco.RSS.Config{
+    %RSS.Config{
       name: "The Quietus",
       feed_url: "https://thequietus.com/reviews.atom",
       site_url: "https://thequietus.com",
@@ -107,7 +109,7 @@ defmodule Nudedisco.RSS.Constants do
         date: ~x"./published/text()"s
       ]
     },
-    %Nudedisco.RSS.Config{
+    %RSS.Config{
       name: "Rolling Stone",
       feed_url: "https://www.rollingstone.com/music/music-album-reviews/feed/",
       site_url: "https://www.rollingstone.com/music/music-album-reviews/",
@@ -117,6 +119,6 @@ defmodule Nudedisco.RSS.Constants do
     }
   ]
 
-  @spec feed_configs() :: [Nudedisco.RSS.Config.t(), ...]
+  @spec feed_configs() :: [RSS.Config.t(), ...]
   def feed_configs(), do: @feed_configs
 end
