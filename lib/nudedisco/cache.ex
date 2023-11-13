@@ -18,7 +18,7 @@ defmodule Nudedisco.Cache do
   end
 
   @spec put!(any, any, keyword) :: any
-  def put!(key, value, options) do
+  def put!(key, value, options \\ []) do
     Cachex.put!(@cache_name, key, value, options)
   end
 

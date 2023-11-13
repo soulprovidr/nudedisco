@@ -13,12 +13,12 @@ defmodule Nudedisco.Util do
         {:ok, body}
 
       {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
-        IO.inspect("[Nudedisco.Util.request] Request failed with status code: #{status_code}")
+        IO.inspect("[Util.request] Request failed with status code: #{status_code}")
         IO.inspect(body)
         :error
 
       {:error, error} ->
-        IO.inspect("[Nudedisco.Util.request] Request failed.")
+        IO.inspect("[Util.request] Request failed.")
         IO.inspect("URL: #{url}")
         IO.inspect(error)
         :error

@@ -35,4 +35,6 @@ defmodule Nudedisco.Playlist.Constants do
 
   @spec system_prompt() :: String.t()
   def system_prompt, do: @system_prompt
+
+  def playlist_id(), do: Application.get_env(:nudedisco, :spotify_playlist_id)
 end

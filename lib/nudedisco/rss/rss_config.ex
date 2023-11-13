@@ -2,6 +2,10 @@ defmodule Nudedisco.RSS.Config do
   @moduledoc """
   A struct representing an RSS feed configuration.
   """
+
+  alias Nudedisco.RSS
+  alias Nudedisco.Util
+
   defstruct [:name, :feed_url, :site_url, :slug, :xpath_spec, :xpath_subspec]
 
   @typedoc """
@@ -19,8 +23,8 @@ defmodule Nudedisco.RSS.Config do
   @doc """
   Hydrates and returns an RSS feed from a given RSS feed configuration.
   """
-  @spec hydrate(Nudedisco.RSS.Config.t()) :: Nudedisco.RSS.Feed.t()
-  def hydrate(%Nudedisco.RSS.Config{} = config) do
+  @spec hydrate(RSS.Config.t()) :: RSS.Feed.t()
+  def hydrate(%RSS.Config{} = config) do
     import SweetXml
 
     %{
@@ -32,14 +36,14 @@ defmodule Nudedisco.RSS.Config do
       xpath_subspec: xpath_subspec
     } = config
 
-    feed = %Nudedisco.RSS.Feed{name: name, site_url: site_url, slug: slug, items: nil}
+    feed = %RSS.Feed{name: name, site_url: site_url, slug: slug, items: nil}
 
-    with {:ok, body} <- Nudedisco.Util.request(:get, feed_url) do
+    with {:ok, body} <- Util.request(:get, feed_url) do
       items =
         xpath(body, xpath_spec, xpath_subspec)
-        |> Enum.map(&struct(Nudedisco.RSS.Item, &1))
+        |> Enum.map(&struct(RSS.Item, &1))
 
-      %Nudedisco.RSS.Feed{feed | items: items}
+      %RSS.Feed{feed | items: items}
     else
       :error ->
         IO.warn("Error reading " <> feed_url <> ".")

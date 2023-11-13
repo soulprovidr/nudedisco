@@ -3,15 +3,21 @@ defmodule Nudedisco.Application do
 
   use Application
 
+  alias Nudedisco.Cache
+  alias Nudedisco.RSS
+  alias Nudedisco.Scheduler
+  alias Nudedisco.Spotify
+  alias Nudedisco.Web
+
   @impl true
   def start(_type, _args) do
     Supervisor.start_link(
       [
-        {Nudedisco.Cache, name: :nudedisco_cache},
-        {Nudedisco.RSS, name: :nudedisco_rss},
-        {Nudedisco.Web, name: :nudedisco_web},
-        {Nudedisco.Spotify, name: :nudedisco_spotify},
-        {Nudedisco.Scheduler, name: :nudedisco_scheduler}
+        {Cache, name: :nudedisco_cache},
+        {RSS, name: :nudedisco_rss},
+        {Spotify, name: :nudedisco_spotify},
+        {Scheduler, name: :nudedisco_scheduler},
+        {Web, name: :nudedisco_web}
       ],
       strategy: :one_for_one
     )
