@@ -48,7 +48,7 @@ defmodule Nudedisco.Spotify.Auth do
         "expires_in" => expires_in
       } = decoded_body = Poison.decode!(body)
 
-      if refresh_token = decoded_body["refresh_token"] do
+      if refresh_token = Map.get(decoded_body, "refresh_token") do
         set_refresh_token(refresh_token)
       end
 
@@ -76,6 +76,13 @@ defmodule Nudedisco.Spotify.Auth do
     url = "https://accounts.spotify.com/authorize?" <> URI.encode_query(query)
 
     IO.puts("[Spotify] Authorize at: #{url}")
+  end
+
+  def is_authorized? do
+    case Cache.get!(@refresh_token_id) do
+      nil -> false
+      _ -> true
+    end
   end
 
   # Get the access token from the cache.

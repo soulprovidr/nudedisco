@@ -43,12 +43,15 @@ defmodule Nudedisco.Playlist do
     get_album_id = fn metadata_item ->
       %{album: album, artist: artist} = metadata_item
       q = "#{artist} #{album}"
-      is_album? = fn album -> album["album_type"] == "album" end
+      is_album? = fn album -> Map.get(album, "album_type") == "album" end
 
-      with {:ok, body} <- Spotify.search(q, "album"),
-           album <-
-             Enum.find(body["albums"]["items"], is_album?) do
-        album["id"]
+      with {:ok, body} <- Spotify.search(q, "album") do
+        album =
+          Map.get(body, "albums")
+          |> Map.get("items")
+          |> Enum.find(is_album?)
+
+        if is_map(album), do: Map.get(album, "id"), else: nil
       else
         _ -> nil
       end
@@ -149,6 +152,11 @@ defmodule Nudedisco.Playlist do
 
   @spec sync! :: boolean()
   def sync! do
+    if !Spotify.Auth.is_authorized?() do
+      IO.puts("[Playlist] Application not authorized to use Spotify API.")
+      false
+    end
+
     playlist_items = get_playlist_items()
     track_uris = Enum.map(playlist_items, & &1.track_uri)
 
