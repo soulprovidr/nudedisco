@@ -6,6 +6,7 @@ defmodule Nudedisco.Playlist do
   uses the Spotify API to create a playlist based on this metadata.
   """
 
+  alias Nudedisco.Listmonk
   alias Nudedisco.OpenAI
   alias Nudedisco.Playlist
   alias Nudedisco.RSS
@@ -163,6 +164,25 @@ defmodule Nudedisco.Playlist do
     case Spotify.set_playlist_tracks(Playlist.Constants.playlist_id(), track_uris) do
       {:ok, _} ->
         IO.puts("[Playlist] Successfully created playlist.")
+
+        track_list =
+          playlist_items
+          |> Enum.with_index(1)
+          |> Enum.map(fn {v, i} ->
+            "#{i}. #{v.artist} - #{v.title} (#{v.album})"
+          end)
+          |> Enum.join("\n")
+
+        email_subject = "nudedis.co: this week's Fresh Fridays playlist is live! ⚡️"
+
+        email_body = """
+        Fresh Friday has arrived! Here are this week's tracks:\n\n
+        #{track_list}\n\n
+        [Listen on Spotify](https://open.spotify.com/playlist/#{Playlist.Constants.playlist_id()})
+        """
+
+        _ = Listmonk.send_email!(email_subject, email_body)
+
         true
 
       _ ->
