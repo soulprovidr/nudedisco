@@ -17,9 +17,6 @@ defmodule Nudedisco.MixProject do
       env: [
         openai_api_key: nil,
         port: 8080,
-        listmonk_admin_user: nil,
-        listmonk_admin_password: nil,
-        listmonk_list_id: nil,
         spotify_client_id: nil,
         spotify_client_secret: nil,
         spotify_playlist_id: nil,
