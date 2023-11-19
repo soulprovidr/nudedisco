@@ -15,11 +15,12 @@ defmodule Nudedisco.MixProject do
     [
       extra_applications: [:logger],
       env: [
-        openai_api_key: nil,
         port: 8080,
+        listmonk_api_url: nil,
         listmonk_admin_user: nil,
         listmonk_admin_password: nil,
         listmonk_list_id: nil,
+        openai_api_key: nil,
         spotify_client_id: nil,
         spotify_client_secret: nil,
         spotify_playlist_id: nil,

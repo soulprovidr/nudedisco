@@ -3,6 +3,14 @@ defmodule Nudedisco.Listmonk.Constants do
   nudedisco listmonk constants.
   """
 
+  @list_id 3
+  @template_id 1
+
+  @doc """
+  Listmonk API URL.
+  """
+  def api_url(), do: Application.get_env(:nudedisco, :listmonk_api_url)
+
   @doc """
   Listmonk admin user.
   """
@@ -13,5 +21,7 @@ defmodule Nudedisco.Listmonk.Constants do
   """
   def admin_password, do: Application.get_env(:nudedisco, :listmonk_admin_password)
 
-  def list_id, do: Application.get_env(:nudedisco, :listmonk_list_id)
+  def list_id, do: @list_id
+
+  def template_id, do: @template_id
 end

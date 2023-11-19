@@ -3,15 +3,18 @@ defmodule Nudedisco.Listmonk do
   alias Nudedisco.Util
 
   defp create_campaign(subject, body) do
+    api_url = Listmonk.Constants.api_url()
     username = Listmonk.Constants.admin_user()
     password = Listmonk.Constants.admin_password()
     list_id = Listmonk.Constants.list_id()
+    template_id = Listmonk.Constants.template_id()
 
     body =
       Poison.encode!(%{
-        "name" => "nudedisco campaign",
+        "name" => "nudedis.co: Fresh Fridays",
         "subject" => subject,
         "lists" => [list_id],
+        "template_id" => template_id,
         "type" => "regular",
         "content_type" => "markdown",
         "body" => body
@@ -24,7 +27,7 @@ defmodule Nudedisco.Listmonk do
       {"Authorization", "Basic #{token}"}
     ]
 
-    url = "https://mail.soulprovidr.dev/api/campaigns"
+    url = "#{api_url}/campaigns"
 
     with {:ok, body} <- Util.request(:post, url, body, headers) do
       IO.puts("[Listmonk] Successfully sent email.")
@@ -38,6 +41,7 @@ defmodule Nudedisco.Listmonk do
   end
 
   defp start_campaign(campaign_id) do
+    api_url = Listmonk.Constants.api_url()
     username = Listmonk.Constants.admin_user()
     password = Listmonk.Constants.admin_password()
 
@@ -54,7 +58,7 @@ defmodule Nudedisco.Listmonk do
       {"Authorization", "Basic #{token}"}
     ]
 
-    url = "https://mail.soulprovidr.dev/api/campaigns/#{campaign_id}/status"
+    url = "#{api_url}/campaigns/#{campaign_id}/status"
 
     with {:ok, body} <- Util.request(:put, url, body, headers) do
       IO.puts("[Listmonk] Successfully started campaign.")
@@ -66,7 +70,7 @@ defmodule Nudedisco.Listmonk do
     end
   end
 
-  def send_email!(subject, body) do
+  def send_campaign!(subject, body) do
     with {:ok, campaign_id} <- create_campaign(subject, body),
          {:ok, _data} <- start_campaign(campaign_id) do
       :ok

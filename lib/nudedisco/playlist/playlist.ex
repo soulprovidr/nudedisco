@@ -168,20 +168,26 @@ defmodule Nudedisco.Playlist do
         track_list =
           playlist_items
           |> Enum.with_index(1)
-          |> Enum.map(fn {v, i} ->
-            "#{i}. #{v.artist} - #{v.title} (#{v.album})"
+          |> Enum.map(fn {v, _} ->
+            "| ![](#{v.image}) | #{v.artist} | #{v.title} |"
           end)
           |> Enum.join("\n")
 
         email_subject = "nudedis.co: this week's Fresh Fridays playlist is live! ⚡️"
 
         email_body = """
-        Fresh Friday has arrived! Here are this week's tracks:\n\n
+        Here are this week's tracks:\n\n
+        |   |   |   |
+        | - | - | - |
         #{track_list}\n\n
-        [Listen on Spotify](https://open.spotify.com/playlist/#{Playlist.Constants.playlist_id()})
+        <a
+          class="button"
+          href="https://open.spotify.com/playlist/#{Playlist.Constants.playlist_id()}">
+          Listen on Spotify
+        </a>
         """
 
-        _ = Listmonk.send_email!(email_subject, email_body)
+        _ = Listmonk.send_campaign!(email_subject, email_body)
 
         true
 
