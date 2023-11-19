@@ -1,4 +1,37 @@
 defmodule Nudedisco.Playlist.Constants do
+  @email_subject "nudedis.co: this week's Fresh Fridays playlist is live! ⚡️"
+
+  @spec email_subject() :: String.t()
+  def email_subject(), do: @email_subject
+
+  @spec email_body([Nudedisco.Playlist.Item.t()]) :: String.t()
+  def email_body(playlist_items) do
+    get_tracklist_row = fn item ->
+      """
+      | ![](#{item.image}) | <div class="title">#{item.title}</div><div class="artist">#{item.artist}</div> |
+      """
+    end
+
+    """
+    ## Fresh Fridays has arrived! 😎
+
+    Get the week's newest releases across genres in one playlist, updated every Friday morning. Kickstart your weekend with fresh beats and emerging artists.
+
+    <a
+      class="button"
+      href="https://open.spotify.com/playlist/098JzO5hMPu4sfy850iJNz">
+      Listen on Spotify
+    </a>
+
+    <hr />
+
+    ### Tracklist:
+    |   |   |
+    | - | - |
+    #{playlist_items |> Enum.map(get_tracklist_row) |> Enum.join("\r")}
+    """
+  end
+
   @system_prompt "Using the data present in an array of JSON objects representing RSS feed items for music album reviews, provide a JSON array containing a list of JSON objects of the following form: [{album: '<album>', artist: '<artist>'}, ...].
 
   Both the album and artist keys are required, and should not have associated values that represent null or undefined, such as 'N/A'. For any items where either the artist or album cannot be extracted or inferred, omit the corresponding object from the new list. In other words, only include objects where both album and artist are defined.

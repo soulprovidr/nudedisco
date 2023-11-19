@@ -2,7 +2,7 @@ defmodule Nudedisco.Listmonk do
   alias Nudedisco.Listmonk
   alias Nudedisco.Util
 
-  defp create_campaign(subject, body) do
+  def create_campaign(subject, body) do
     api_url = Listmonk.Constants.api_url()
     username = Listmonk.Constants.admin_user()
     password = Listmonk.Constants.admin_password()
@@ -40,7 +40,7 @@ defmodule Nudedisco.Listmonk do
     end
   end
 
-  defp start_campaign(campaign_id) do
+  def start_campaign(campaign_id) do
     api_url = Listmonk.Constants.api_url()
     username = Listmonk.Constants.admin_user()
     password = Listmonk.Constants.admin_password()
@@ -70,12 +70,35 @@ defmodule Nudedisco.Listmonk do
     end
   end
 
-  def send_campaign!(subject, body) do
-    with {:ok, campaign_id} <- create_campaign(subject, body),
-         {:ok, _data} <- start_campaign(campaign_id) do
-      :ok
+  def create_subscriber(email) do
+    api_url = Listmonk.Constants.api_url()
+    username = Listmonk.Constants.admin_user()
+    password = Listmonk.Constants.admin_password()
+    list_id = Listmonk.Constants.list_id()
+
+    body =
+      Poison.encode!(%{
+        "email" => email,
+        "name" => "",
+        "lists" => [list_id],
+        "status" => "enabled"
+      })
+
+    token = Base.encode64("#{username}:#{password}")
+
+    headers = [
+      {"Content-Type", "application/json"},
+      {"Authorization", "Basic #{token}"}
+    ]
+
+    url = "#{api_url}/subscribers"
+
+    with {:ok, body} <- Util.request(:post, url, body, headers) do
+      IO.puts("[Listmonk] Successfully created subscriber.")
+      {:ok, body}
     else
       _ ->
+        IO.puts("[Listmonk] Failed to create subscriber.")
         :error
     end
   end

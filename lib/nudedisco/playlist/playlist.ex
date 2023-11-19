@@ -165,35 +165,15 @@ defmodule Nudedisco.Playlist do
       {:ok, _} ->
         IO.puts("[Playlist] Successfully created playlist.")
 
-        track_list =
-          playlist_items
-          |> Enum.with_index(1)
-          |> Enum.map(fn {v, _} ->
-            "| ![](#{v.image}) | #{v.artist} | #{v.title} |"
-          end)
-          |> Enum.join("\n")
+        subject = Playlist.Constants.email_subject()
+        body = Playlist.Constants.email_body(playlist_items)
 
-        email_subject = "nudedis.co: this week's Fresh Fridays playlist is live! ⚡️"
-
-        email_body = """
-        Here are this week's tracks:\n\n
-        |   |   |   |
-        | - | - | - |
-        #{track_list}\n\n
-        <a
-          class="button"
-          href="https://open.spotify.com/playlist/#{Playlist.Constants.playlist_id()}">
-          Listen on Spotify
-        </a>
-        """
-
-        _ = Listmonk.send_campaign!(email_subject, email_body)
-
-        true
-
-      _ ->
-        IO.puts("[Playlist] Could not create playlist.")
-        false
+        with {:ok, campaign_id} <- Listmonk.create_campaign(subject, body),
+             {:ok, _} <- Listmonk.start_campaign(campaign_id) do
+          true
+        else
+          _ -> false
+        end
     end
   end
 end
