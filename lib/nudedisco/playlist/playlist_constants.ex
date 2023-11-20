@@ -1,11 +1,23 @@
 defmodule Nudedisco.Playlist.Constants do
-  @email_subject "nudedis.co: this week's Fresh Fridays playlist is live! ⚡️"
+  @fresh_emojis ["🥝", "🍓", "🍇", "🥑", "🍒", "🍍", "🍋", "🍉", "🥭", "🫐", "🍎", "🍊"]
 
   @spec email_subject() :: String.t()
-  def email_subject(), do: @email_subject
+  def email_subject() do
+    date =
+      DateTime.utc_now()
+      |> Calendar.strftime("%m/%d")
+
+    "nudedis.co's Fresh Fridays: your #{date} playlist is live ⚡️"
+  end
 
   @spec email_body([Nudedisco.Playlist.Item.t()]) :: String.t()
   def email_body(playlist_items) do
+    date =
+      DateTime.utc_now()
+      |> Calendar.strftime("%B %d, %Y")
+
+    emoji = Enum.random(@fresh_emojis)
+
     tracklist_rows =
       playlist_items
       |> Enum.map(fn item ->
@@ -28,9 +40,9 @@ defmodule Nudedisco.Playlist.Constants do
       |> Enum.join("\r")
 
     """
-    ## Fresh Fridays has arrived! 😎
+    ## #{date}: what's fresh this week #{emoji}
 
-    Get the week's newest releases across genres in one playlist, updated every Friday morning. Kickstart your weekend with fresh beats and emerging artists.
+    Get your weekend started with brand new music – reviewed by the Internet's top music minds, including Pitchfork, Bandcamp, and more.
 
     <a
       class="button"
