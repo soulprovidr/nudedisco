@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{{ .Campaign.Subject }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1"
+    />
+    <base target="_blank" />
+    <style>
+      body {
+        background-color: #fff;
+        font-family: 'Helvetica Neue', 'Segoe UI', Helvetica, sans-serif;
+        font-size: 15px;
+        line-height: 26px;
+        margin: 0;
+        color: #444;
+      }
+
+      hr {
+        border: 1px solid #dddddd;
+      }
+      
+      .wrap {
+        padding: 30px;
+        max-width: 525px;
+        margin: 0 auto;
+      }
+
+      .button {
+        background: #1b2940;
+        border: none;
+        border-radius: 3px;
+        text-decoration: none !important;
+        color: #fff !important;
+        font-weight: bold;
+        margin: 16px auto;
+        width: auto;
+        padding: 10px 30px;
+        display: inline-block;
+      }
+
+      .button:hover {
+        background: #606c76;
+      }
+      
+      table {
+        width: 100%;
+        border: none;
+      }
+
+      table td {
+        border: none;
+        line-height: 22px;
+        padding: 8px 4px;
+      }
+
+      .cover {
+        border-radius: 4px;
+        width: 50px;
+        height: auto;
+        vertical-align: middle;
+      }
+
+      .title {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 24px;
+      }
+
+      .artist {
+        color: #777;
+        font-size: 14px;
+        margin: 0;
+      }
+
+      a {
+        color: #1b2940;
+      }
+
+      a:hover {
+        color: #606c76;
+      }
+      
+      .footer {
+        text-align: center;
+        font-size: 12px;
+        color: #888;
+      }
+
+      .footer a {
+        color: #888;
+        margin-right: 5px;
+      }
+
+      @media screen and (max-width: 600px) {
+        .wrap {
+          max-width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body
+    style="
+      background-color: #fff;
+      font-family: 'Helvetica Neue', 'Segoe UI', Helvetica, sans-serif;
+      font-size: 15px;
+      line-height: 26px;
+      margin: 0;
+      color: #444;
+    "
+  >
+    <div
+      class="wrap"
+      style="
+        padding: 30px;
+        max-width: 525px;
+        margin: 0 auto;
+      "
+    >
+      {{ template "content" . }}
+    </div>
+
+    <div
+      class="footer"
+      style="text-align: center; font-size: 12px; color: #888"
+    >
+      <p>Sent with ♥️ from Toronto, Canada.</p>
+      <p>
+        <a href="{{ MessageURL }}" style="color: #888"
+          >{{ L.T "email.viewInBrowser" }}</a
+        >&nbsp;/&nbsp;
+        <a href="{{ UnsubscribeURL }}" style="color: #888"
+          >{{ L.T "email.unsub" }}</a
+        >
+      </p>
+    </div>
+
+    <div class="gutter" style="padding: 30px">&nbsp;{{ TrackView }}</div>
+  </body>
+</html>
