@@ -9,6 +9,7 @@ defmodule Nudedisco.Listmonk do
     {"Authorization", "Basic #{token}"}
   end
 
+  @spec create_campaign(String.t(), String.t()) :: :error | {:ok, any()}
   def create_campaign(subject, body) do
     api_url = Listmonk.Constants.api_url()
     list_id = Listmonk.Constants.list_id()
@@ -43,6 +44,7 @@ defmodule Nudedisco.Listmonk do
     end
   end
 
+  @spec start_campaign(integer()) :: :error | {:ok, any()}
   def start_campaign(campaign_id) do
     api_url = Listmonk.Constants.api_url()
 
@@ -69,6 +71,7 @@ defmodule Nudedisco.Listmonk do
     end
   end
 
+  @spec create_subscriber(String.t()) :: :error | {:ok, any()}
   def create_subscriber(email) do
     api_url = Listmonk.Constants.api_url()
     list_id = Listmonk.Constants.list_id()
@@ -76,7 +79,7 @@ defmodule Nudedisco.Listmonk do
     body =
       Poison.encode!(%{
         "email" => email,
-        "name" => "",
+        "name" => String.split(email, "@") |> List.first(),
         "lists" => [list_id],
         "status" => "enabled"
       })
