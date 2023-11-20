@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>{{ .Campaign.Subject }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -17,6 +17,10 @@
         margin: 0;
         color: #444;
       }
+
+      hr {
+        border: 1px solid #dddddd;
+      }
       
       .wrap {
         padding: 30px;
@@ -25,7 +29,7 @@
       }
 
       .button {
-        background: #0055d4;
+        background: #1b2940;
         border: none;
         border-radius: 3px;
         text-decoration: none !important;
@@ -38,13 +42,7 @@
       }
 
       .button:hover {
-        background: #03409b;
-      }
-
-      img {
-        border-radius: 4px;
-        max-width: 50px;
-        height: auto;
+        background: #606c76;
       }
       
       table {
@@ -55,7 +53,14 @@
       table td {
         border: none;
         line-height: 22px;
-        padding: 2px 4px;
+        padding: 8px 4px;
+      }
+
+      .cover {
+        border-radius: 4px;
+        width: 50px;
+        height: auto;
+        vertical-align: middle;
       }
 
       .title {
@@ -71,11 +76,11 @@
       }
 
       a {
-        color: #0055d4;
+        color: #1b2940;
       }
 
       a:hover {
-        color: #03409b;
+        color: #606c76;
       }
       
       .footer {
