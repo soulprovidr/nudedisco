@@ -2,10 +2,15 @@ defmodule Nudedisco.Listmonk do
   alias Nudedisco.Listmonk
   alias Nudedisco.Util
 
-  def create_campaign(subject, body) do
-    api_url = Listmonk.Constants.api_url()
+  defp get_authorization_header() do
     username = Listmonk.Constants.admin_user()
     password = Listmonk.Constants.admin_password()
+    token = Base.encode64("#{username}:#{password}")
+    {"Authorization", "Basic #{token}"}
+  end
+
+  def create_campaign(subject, body) do
+    api_url = Listmonk.Constants.api_url()
     list_id = Listmonk.Constants.list_id()
     template_id = Listmonk.Constants.template_id()
 
@@ -20,11 +25,9 @@ defmodule Nudedisco.Listmonk do
         "body" => body
       })
 
-    token = Base.encode64("#{username}:#{password}")
-
     headers = [
       {"Content-Type", "application/json"},
-      {"Authorization", "Basic #{token}"}
+      get_authorization_header()
     ]
 
     url = "#{api_url}/campaigns"
@@ -42,8 +45,6 @@ defmodule Nudedisco.Listmonk do
 
   def start_campaign(campaign_id) do
     api_url = Listmonk.Constants.api_url()
-    username = Listmonk.Constants.admin_user()
-    password = Listmonk.Constants.admin_password()
 
     body =
       Poison.encode!(%{
@@ -51,11 +52,9 @@ defmodule Nudedisco.Listmonk do
         "status" => "running"
       })
 
-    token = Base.encode64("#{username}:#{password}")
-
     headers = [
       {"Content-Type", "application/json"},
-      {"Authorization", "Basic #{token}"}
+      get_authorization_header()
     ]
 
     url = "#{api_url}/campaigns/#{campaign_id}/status"
@@ -72,8 +71,6 @@ defmodule Nudedisco.Listmonk do
 
   def create_subscriber(email) do
     api_url = Listmonk.Constants.api_url()
-    username = Listmonk.Constants.admin_user()
-    password = Listmonk.Constants.admin_password()
     list_id = Listmonk.Constants.list_id()
 
     body =
@@ -84,11 +81,9 @@ defmodule Nudedisco.Listmonk do
         "status" => "enabled"
       })
 
-    token = Base.encode64("#{username}:#{password}")
-
     headers = [
       {"Content-Type", "application/json"},
-      {"Authorization", "Basic #{token}"}
+      get_authorization_header()
     ]
 
     url = "#{api_url}/subscribers"
