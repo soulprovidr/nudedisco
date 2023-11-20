@@ -6,11 +6,26 @@ defmodule Nudedisco.Playlist.Constants do
 
   @spec email_body([Nudedisco.Playlist.Item.t()]) :: String.t()
   def email_body(playlist_items) do
-    get_tracklist_row = fn item ->
-      """
-      | ![](#{item.image}) | <div class="title">#{item.title}</div><div class="artist">#{item.artist}</div> |
-      """
-    end
+    tracklist_rows =
+      playlist_items
+      |> Enum.map(fn item ->
+        """
+        <tr>
+          <td>
+            <img
+              alt="Cover art for #{item.album} by #{item.artist}"
+              class="cover"
+              src="#{item.image}"
+            />
+          </td>
+          <td>
+            <div class="title">#{item.title}</div>
+            <div class="artist">#{item.artist}</div>
+          </td>
+        </tr>
+        """
+      end)
+      |> Enum.join("\r")
 
     """
     ## Fresh Fridays has arrived! 😎
@@ -26,9 +41,9 @@ defmodule Nudedisco.Playlist.Constants do
     <hr />
 
     ### Tracklist:
-    |   |   |
-    | - | - |
-    #{playlist_items |> Enum.map(get_tracklist_row) |> Enum.join("\r")}
+    <table role="presentation">
+    #{tracklist_rows}
+    </table>
     """
   end
 
