@@ -10,8 +10,15 @@ defmodule Nudedisco.Spotify do
   alias Nudedisco.Spotify
 
   def init(_) do
-    Spotify.Auth.authorize()
-    {:ok, nil}
+    children = [
+      {Spotify.Auth, name: Spotify.Auth}
+    ]
+
+    Supervisor.start_link(children, strategy: :one_for_one)
+  end
+
+  def start_link(_) do
+    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
   @spec get_album(String.t()) :: :error | {:ok, any}
@@ -50,14 +57,6 @@ defmodule Nudedisco.Spotify do
     url = "https://api.spotify.com/v1/playlists/#{playlist_id}/tracks"
     body = Poison.encode!(%{"uris" => track_uris})
 
-    with {:ok, body} <- Spotify.Util.request(:put, url, body) do
-      {:ok, body}
-    else
-      :error -> :error
-    end
-  end
-
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
+    Spotify.Util.request(:put, url, body)
   end
 end

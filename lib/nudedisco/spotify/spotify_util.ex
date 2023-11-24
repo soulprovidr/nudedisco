@@ -8,7 +8,7 @@ defmodule Nudedisco.Spotify.Util do
   @spec request(atom, String.t(), String.t(), [{String.t(), String.t()}]) ::
           {:ok, any} | :error
   def request(method, url, body \\ "", headers \\ []) do
-    with {:ok, access_token} <- Spotify.Auth.get_access_token(),
+    with access_token when access_token != nil <- Spotify.Auth.get_access_token(),
          {:ok, body} <-
            Util.request(method, url, body, [
              {"Authorization", "Bearer #{access_token}}"} | headers
