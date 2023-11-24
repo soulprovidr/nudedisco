@@ -1,8 +1,8 @@
 defmodule Nudedisco.Spotify.Constants do
   @moduledoc """
   nudedisco Spotify constants.
-  """
 
+  """
   @doc """
   Spotify API client ID.
   """

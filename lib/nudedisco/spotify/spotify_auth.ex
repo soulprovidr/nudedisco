@@ -7,32 +7,70 @@ defmodule Nudedisco.Spotify.Auth do
   After authorizing the application, Spotify will redirect to the `redirect_uri` with a `code` query parameter. This code is used to obtain an `access_token` and `refresh_token` via the `handle_authorization/1` function.
   """
 
-  alias Nudedisco.Cache
+  use GenServer
+
   alias Nudedisco.Spotify
   alias Nudedisco.Util
 
-  @access_token_id :spotify_access_token
-  @refresh_token_id :spotify_refresh_token
+  @table :spotify_auth
+
+  @access_token_id :access_token
+  @refresh_token_id :refresh_token
+
+  def start_link(_) do
+    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
+  end
+
+  def init(_) do
+    table = :ets.new(@table, [:set, :named_table, :public])
+    authorize()
+    {:ok, table}
+  end
+
+  ### Client API.
+
+  def authorize() do
+    GenServer.cast(__MODULE__, :authorize)
+  end
+
+  @doc """
+  Handle the authorization callback from Spotify.
+  Sets the `access_token` in the cache and sets the `refresh_token` in the application environment.
+  """
+  @spec handle_authorization(String.t()) :: :ok | :error
+  def handle_authorization(code) do
+    GenServer.cast(__MODULE__, {:handle_authorization, code})
+  end
+
+  @spec get_access_token :: String.t() | :error
+  def get_access_token do
+    GenServer.call(__MODULE__, :get_access_token)
+  end
+
+  @spec is_authorized?() :: boolean()
+  def is_authorized? do
+    GenServer.call(__MODULE__, :is_authorized?)
+  end
+
+  ### Helpers.
 
   defp get_refresh_token do
-    Cache.get!(@refresh_token_id)
+    case :ets.lookup(@table, @refresh_token_id) do
+      [{_, refresh_token}] -> refresh_token
+      [] -> nil
+    end
   end
 
-  defp set_refresh_token(refresh_token) do
-    Cache.put!(@refresh_token_id, refresh_token)
-  end
-
-  defp set_access_token(access_token, expires_in) do
-    Cache.put!(@access_token_id, access_token, ttl: expires_in)
-  end
-
-  # Refresh the access token.
-  # Cache the `refresh_token` and return the new `access_token` (and `expires_in` value).
-  @spec refresh_access_token :: {:ok, {String.t(), integer}} | :error
+  @spec refresh_access_token :: String.t() | nil
   defp refresh_access_token do
     client_id = Spotify.Constants.client_id()
     client_secret = Spotify.Constants.client_secret()
     refresh_token = get_refresh_token()
+
+    if is_nil(refresh_token) do
+      IO.puts("[Spotify] No refresh token found.")
+      nil
+    end
 
     url = "https://accounts.spotify.com/api/token"
     body = {:form, [{"grant_type", "refresh_token"}, {"refresh_token", refresh_token}]}
@@ -42,26 +80,64 @@ defmodule Nudedisco.Spotify.Auth do
       {"Authorization", "Basic #{Base.encode64("#{client_id}:#{client_secret}")}"}
     ]
 
-    with {:ok, body} <- Util.request(:post, url, body, headers) do
-      %{
-        "access_token" => access_token,
-        "expires_in" => expires_in
-      } = decoded_body = Poison.decode!(body)
+    case Util.request(:post, url, body, headers) do
+      {:ok, body} ->
+        %{
+          "access_token" => access_token,
+          "expires_in" => expires_in
+        } = decoded_body = Poison.decode!(body)
 
-      if refresh_token = Map.get(decoded_body, "refresh_token") do
-        set_refresh_token(refresh_token)
-      end
+        set_access_token(access_token, expires_in)
 
-      IO.puts("[Spotify] Successfully refreshed access token.")
-      {:ok, {access_token, expires_in}}
-    else
-      :error ->
-        :error
+        if refresh_token = Map.get(decoded_body, "refresh_token") do
+          set_refresh_token(refresh_token)
+        end
+
+        IO.puts("[Spotify] Successfully refreshed access token.")
+        access_token
+
+      _ ->
+        IO.puts("[Spotify] Could not refresh access token.")
+        nil
     end
   end
 
-  @spec authorize :: :ok
-  def authorize do
+  defp set_access_token(access_token, expires_in) do
+    :ets.insert(@table, {
+      @access_token_id,
+      access_token,
+      :os.system_time(:seconds) + expires_in
+    })
+  end
+
+  defp set_refresh_token(refresh_token) do
+    :ets.insert(@table, {@refresh_token_id, refresh_token})
+  end
+
+  ### GenServer callbacks.
+
+  def handle_call(:get_access_token, _from, table) do
+    case :ets.lookup(@table, @access_token_id) do
+      [] ->
+        {:reply, refresh_access_token(), table}
+
+      [{_, access_token, expires_in}] ->
+        if expires_in < :os.system_time(:seconds) do
+          {:reply, refresh_access_token(), table}
+        else
+          {:reply, access_token, table}
+        end
+    end
+  end
+
+  def handle_call(:is_authorized?, _from, table) do
+    case get_refresh_token() do
+      nil -> {:reply, false, table}
+      _ -> {:reply, true, table}
+    end
+  end
+
+  def handle_cast(:authorize, table) do
     client_id = Spotify.Constants.client_id()
     redirect_uri = Spotify.Constants.redirect_uri()
 
@@ -76,48 +152,10 @@ defmodule Nudedisco.Spotify.Auth do
     url = "https://accounts.spotify.com/authorize?" <> URI.encode_query(query)
 
     IO.puts("[Spotify] Authorize at: #{url}")
+    {:noreply, table}
   end
 
-  def is_authorized? do
-    case Cache.get!(@refresh_token_id) do
-      nil -> false
-      _ -> true
-    end
-  end
-
-  # Get the access token from the cache.
-  # If the token is not in the cache, refresh it.
-  @spec get_access_token :: {:ok, String.t()} | :error
-  def get_access_token do
-    result =
-      Cache.fetch(
-        @access_token_id,
-        fn ->
-          case refresh_access_token() do
-            {:ok, {access_token, expires_in}} ->
-              set_access_token(access_token, expires_in)
-              {:commit, access_token, ttl: expires_in}
-
-            :error ->
-              {:ignore, nil}
-          end
-        end,
-        []
-      )
-
-    case result do
-      {:ok, access_token} -> {:ok, access_token}
-      {:commit, access_token, _ttl} -> {:ok, access_token}
-      {:ignore, _} -> :error
-    end
-  end
-
-  @doc """
-  Handle the authorization callback from Spotify.
-  Sets the `access_token` in the cache and sets the `refresh_token` in the application environment.
-  """
-  @spec handle_authorization(String.t()) :: :ok | :error
-  def handle_authorization(code) do
+  def handle_cast({:handle_authorization, code}, table) do
     client_id = Spotify.Constants.client_id()
     client_secret = Spotify.Constants.client_secret()
     redirect_uri = Spotify.Constants.redirect_uri()
@@ -132,21 +170,23 @@ defmodule Nudedisco.Spotify.Auth do
       {"Authorization", "Basic #{Base.encode64("#{client_id}:#{client_secret}")}"}
     ]
 
-    with {:ok, body} <- Util.request(:post, url, body, headers) do
-      %{
-        "access_token" => access_token,
-        "expires_in" => expires_in,
-        "refresh_token" => refresh_token
-      } = Poison.decode!(body)
+    case Util.request(:post, url, body, headers) do
+      {:ok, body} ->
+        %{
+          "access_token" => access_token,
+          "expires_in" => expires_in,
+          "refresh_token" => refresh_token
+        } = Poison.decode!(body)
 
-      set_access_token(access_token, expires_in)
-      set_refresh_token(refresh_token)
+        set_access_token(access_token, expires_in)
+        set_refresh_token(refresh_token)
 
-      IO.puts("[Spotify] Successfully authorized application.")
-      :ok
-    else
+        IO.puts("[Spotify] Successfully authorized application.")
+        {:noreply, table}
+
       :error ->
-        :error
+        IO.puts("[Spotify] Could not authorize application.")
+        {:noreply, table}
     end
   end
 end
