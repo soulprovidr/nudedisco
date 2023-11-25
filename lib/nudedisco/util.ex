@@ -1,6 +1,8 @@
 defmodule Nudedisco.Util do
   @moduledoc false
 
+  require Logger
+
   @doc """
   Make an HTTP request. Wrapper around HTTPoison.request/4.
   """
@@ -13,13 +15,12 @@ defmodule Nudedisco.Util do
         {:ok, body}
 
       {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
-        IO.inspect("[Util.request] Request failed with status code: #{status_code}")
+        Logger.error("[Util.request] Request failed with status code: #{status_code}")
         IO.inspect(body)
         :error
 
       {:error, error} ->
-        IO.inspect("[Util.request] Request failed.")
-        IO.inspect("URL: #{url}")
+        Logger.error("[Util.request] Request failed: #{method} #{url}")
         IO.inspect(error)
         :error
     end

@@ -2,18 +2,21 @@ defmodule Nudedisco.Listmonk do
   alias Nudedisco.Listmonk
   alias Nudedisco.Util
 
+  require Logger
+
+  defp api_url(), do: Application.get_env(:nudedisco, Listmonk)[:api_url]
+  defp admin_user(), do: Application.get_env(:nudedisco, Listmonk)[:admin_user]
+  defp admin_password(), do: Application.get_env(:nudedisco, Listmonk)[:admin_password]
+
   defp get_authorization_header() do
-    username = Listmonk.Constants.admin_user()
-    password = Listmonk.Constants.admin_password()
-    token = Base.encode64("#{username}:#{password}")
+    token = Base.encode64("#{admin_user()}:#{admin_password()}")
     {"Authorization", "Basic #{token}"}
   end
 
-  @spec create_campaign(String.t(), String.t()) :: :error | {:ok, any()}
-  def create_campaign(subject, body) do
-    api_url = Listmonk.Constants.api_url()
-    list_id = Listmonk.Constants.list_id()
-    template_id = Listmonk.Constants.template_id()
+  @spec create_campaign(String.t(), String.t(), list()) :: :error | {:ok, any()}
+  def create_campaign(subject, body, opts \\ []) do
+    list_id = Keyword.get(opts, :list_id)
+    template_id = Keyword.get(opts, :template_id)
 
     body =
       Poison.encode!(%{
@@ -22,7 +25,7 @@ defmodule Nudedisco.Listmonk do
         "lists" => [list_id],
         "template_id" => template_id,
         "type" => "regular",
-        "content_type" => "markdown",
+        "content_type" => "html",
         "body" => body
       })
 
@@ -31,23 +34,21 @@ defmodule Nudedisco.Listmonk do
       get_authorization_header()
     ]
 
-    url = "#{api_url}/campaigns"
+    url = "#{api_url()}/campaigns"
 
     with {:ok, body} <- Util.request(:post, url, body, headers) do
-      IO.puts("[Listmonk] Successfully sent email.")
+      Logger.debug("[Listmonk] Successfully sent email.")
       %{"data" => %{"id" => campaign_id}} = Poison.decode!(body)
       {:ok, campaign_id}
     else
       _ ->
-        IO.puts("[Listmonk] Failed to send email.")
+        Logger.debug("[Listmonk] Failed to send email.")
         :error
     end
   end
 
   @spec start_campaign(integer()) :: :error | {:ok, any()}
   def start_campaign(campaign_id) do
-    api_url = Listmonk.Constants.api_url()
-
     body =
       Poison.encode!(%{
         "campaign_id" => campaign_id,
@@ -59,22 +60,21 @@ defmodule Nudedisco.Listmonk do
       get_authorization_header()
     ]
 
-    url = "#{api_url}/campaigns/#{campaign_id}/status"
+    url = "#{api_url()}/campaigns/#{campaign_id}/status"
 
     with {:ok, body} <- Util.request(:put, url, body, headers) do
-      IO.puts("[Listmonk] Successfully started campaign.")
+      Logger.debug("[Listmonk] Successfully started campaign.")
       {:ok, body}
     else
       _ ->
-        IO.puts("[Listmonk] Failed to start campaign.")
+        Logger.debug("[Listmonk] Failed to start campaign.")
         :error
     end
   end
 
   @spec create_subscriber(String.t()) :: :error | {:ok, any()}
-  def create_subscriber(email) do
-    api_url = Listmonk.Constants.api_url()
-    list_id = Listmonk.Constants.list_id()
+  def create_subscriber(email, opts \\ []) do
+    list_id = Keyword.get(opts, :list_id)
 
     body =
       Poison.encode!(%{
@@ -89,14 +89,14 @@ defmodule Nudedisco.Listmonk do
       get_authorization_header()
     ]
 
-    url = "#{api_url}/subscribers"
+    url = "#{api_url()}/subscribers"
 
     with {:ok, body} <- Util.request(:post, url, body, headers) do
-      IO.puts("[Listmonk] Successfully created subscriber.")
+      Logger.debug("[Listmonk] Successfully created subscriber.")
       {:ok, body}
     else
       _ ->
-        IO.puts("[Listmonk] Failed to create subscriber.")
+        Logger.debug("[Listmonk] Failed to create subscriber.")
         :error
     end
   end

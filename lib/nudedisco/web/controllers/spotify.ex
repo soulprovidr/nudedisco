@@ -3,9 +3,11 @@ defmodule Nudedisco.Web.Controllers.Spotify do
 
   alias Nudedisco.Spotify
 
+  require Logger
+
   @impl Raxx.SimpleServer
   def handle_request(%{method: :GET, path: ["spotify", "callback"], query: query}, _) do
-    IO.puts("[Spotify] Attempting to obtain refresh token...")
+    Logger.debug("[Spotify] Attempting to obtain refresh token...")
 
     with %{"code" => code} <- URI.decode_query(query),
          :ok <- Spotify.Auth.handle_authorization(code) do

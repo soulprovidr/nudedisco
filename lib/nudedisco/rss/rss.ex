@@ -1,21 +1,24 @@
 defmodule Nudedisco.RSS do
   use GenServer
 
-  alias Nudedisco.Cache
   alias Nudedisco.RSS
 
-  def configs(), do: RSS.Constants.feed_configs()
+  require Logger
 
-  @spec slugs() :: list(String.t())
-  def slugs(), do: Enum.map(configs(), fn config -> config.slug end)
+  @type state :: %{
+          atom() => RSS.Feed.t()
+        }
+
+  @update_interval 60 * 60 * 1000
+
+  def start_link(_) do
+    GenServer.start_link(__MODULE__, [], name: __MODULE__)
+  end
 
   @impl true
-  def init(_args) do
-    if sync!() do
-      {:ok, nil}
-    else
-      {:stop, "Could not initialize RSS module."}
-    end
+  def init(_) do
+    {:noreply, state} = handle_info(:update, %{})
+    {:ok, state}
   end
 
   @doc """
@@ -23,31 +26,41 @@ defmodule Nudedisco.RSS do
   """
   @spec get_feeds :: %{atom() => RSS.Feed.t()}
   def get_feeds do
-    slugs()
-    |> Enum.map(&Cache.get!/1)
-    |> Enum.reject(fn feed -> is_nil(feed) end)
-    |> Enum.into(%{}, fn feed -> {feed.slug, feed} end)
+    GenServer.call(__MODULE__, :get_feeds)
   end
 
-  @doc """
-  Hydrates and caches all RSS feeds.
-  """
-  @spec sync!() :: boolean()
-  def sync!() do
-    IO.puts("Syncing RSS feeds...")
+  @spec get_feed_configs() :: [RSS.Feed.Config.t()]
+  defp get_feed_configs() do
+    Application.get_env(:nudedisco, RSS)
+    |> Keyword.get(:feed_configs, [])
+  end
 
-    configs()
-    |> Task.async_stream(
-      &RSS.Config.hydrate/1,
+  @spec hydrate_feeds() :: state()
+  defp hydrate_feeds() do
+    get_feed_configs()
+    |> Task.async_stream(&RSS.Config.hydrate/1,
       ordered: false,
       timeout: 30 * 1000
     )
     |> Enum.reject(fn {:ok, feed} -> is_nil(feed.items) end)
-    |> Enum.map(fn {:ok, feed} -> {feed.slug, feed} end)
-    |> Cache.put_many!()
+    |> Enum.into(%{}, fn {:ok, feed} -> {feed.slug, feed} end)
   end
 
-  def start_link(_args) do
-    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
+  defp schedule_update do
+    Process.send_after(self(), :update, @update_interval)
+  end
+
+  @impl true
+  def handle_call(:get_feeds, _from, state) do
+    {:reply, state, state}
+  end
+
+  @impl true
+  def handle_info(:update, state) do
+    Logger.debug("[RSS] Updating RSS feeds...")
+    new_state = Map.merge(state, hydrate_feeds())
+    Logger.debug("[RSS] Updated RSS feeds.")
+    schedule_update()
+    {:noreply, new_state}
   end
 end

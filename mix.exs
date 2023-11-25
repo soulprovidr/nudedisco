@@ -14,18 +14,6 @@ defmodule Nudedisco.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      env: [
-        port: 8080,
-        listmonk_api_url: nil,
-        listmonk_admin_user: nil,
-        listmonk_admin_password: nil,
-        listmonk_list_id: nil,
-        openai_api_key: nil,
-        spotify_client_id: nil,
-        spotify_client_secret: nil,
-        spotify_playlist_id: nil,
-        spotify_redirect_uri: nil
-      ],
       mod: {Nudedisco.Application, []}
     ]
   end

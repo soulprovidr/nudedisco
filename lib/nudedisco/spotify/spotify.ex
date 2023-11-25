@@ -1,24 +1,9 @@
 defmodule Nudedisco.Spotify do
-  @moduledoc """
-  Wrapper around Spotify API functionality.
-
-  See the [Spotify Web API docs](https://developer.spotify.com/documentation/web-api/) for more information.
-  """
-
-  use GenServer
-
   alias Nudedisco.Spotify
 
-  def init(_) do
-    children = [
-      {Spotify.Auth, name: Spotify.Auth}
-    ]
-
-    Supervisor.start_link(children, strategy: :one_for_one)
-  end
-
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
+  @spec is_authorized?() :: boolean()
+  def is_authorized?() do
+    Spotify.Auth.is_authorized?()
   end
 
   @spec get_album(String.t()) :: :error | {:ok, any}

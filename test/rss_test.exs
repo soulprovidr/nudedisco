@@ -25,11 +25,4 @@ defmodule RSSTest do
       assert_feed(v)
     end
   end
-
-  test "syncs feeds every hour" do
-    import Crontab.CronExpression
-    job = Nudedisco.Scheduler.find_job(:rss_sync)
-    assert job != nil
-    assert job.schedule == ~e"@hourly"
-  end
 end

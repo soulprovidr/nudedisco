@@ -12,11 +12,17 @@ defmodule Nudedisco.OpenAI do
 
   The `chat_completion` function is used to generate a response to a list of messages.
   """
+  alias Nudedisco.OpenAI
+  alias Nudedisco.Util
 
-  # Calculate the rough cost of a request to OpenAI's GPT-3 API.
-  @spec get_cost(integer()) :: float
-  defp get_cost(tokens) do
-    Float.round(tokens / 1000 * 0.002, 3)
+  require Logger
+
+  defp api_key, do: Application.get_env(:nudedisco, OpenAI)[:api_key]
+
+  # Calculate the rough cost of the request.
+  defp print_cost(%{"total_tokens" => total_tokens}) do
+    total_cost = Float.round(total_tokens / 1000 * 0.002, 3)
+    Logger.debug("[OpenAI] Used #{total_tokens} tokens ($#{total_cost})")
   end
 
   @doc """
@@ -49,23 +55,21 @@ defmodule Nudedisco.OpenAI do
       })
 
     headers = [
-      {"Authorization", "Bearer #{Application.get_env(:nudedisco, :openai_api_key)}"},
+      {"Authorization", "Bearer #{api_key()}"},
       {"Content-Type", "application/json"}
     ]
 
-    with {:ok, body} <- Nudedisco.Util.request(:post, url, body, headers, recv_timeout: 30 * 1000) do
-      decoded_body = Poison.decode!(body)
+    with {:ok, body} <- Util.request(:post, url, body, headers, recv_timeout: 30 * 1000) do
+      %{"choices" => choices, "usage" => usage} = Poison.decode!(body)
 
       content =
-        Map.get(decoded_body, "choices")
+        choices
         |> List.first()
         |> Map.get("message")
         |> Map.get("content")
 
-      usage = Map.get(decoded_body, "usage")
-      total_tokens = Map.get(usage, "total_tokens")
-      total_cost = get_cost(total_tokens)
-      IO.puts("[OpenAI] Used #{total_tokens} tokens ($#{total_cost})")
+      print_cost(usage)
+
       {:ok, content}
     else
       :error ->
