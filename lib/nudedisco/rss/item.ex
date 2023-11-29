@@ -12,7 +12,7 @@ defmodule Nudedisco.RSS.Item do
           title: String.t(),
           description: String.t(),
           url: String.t(),
-          date: String.t(),
+          date: DateTime.t(),
           image: String.t() | nil
         }
 end

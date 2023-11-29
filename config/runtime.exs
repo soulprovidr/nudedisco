@@ -30,7 +30,7 @@ default_xpath_subspec = [
   title: ~x"./title/text()"s,
   description: ~x"./description/text()"s,
   url: ~x"./link/text()"s,
-  date: ~x"./pubDate/text()"s
+  date: ~x"./pubDate/text()"s |> transform_by(&Timex.parse!(&1, "{RFC1123}"))
 ]
 
 config :nudedisco, RSS,
@@ -73,13 +73,10 @@ config :nudedisco, RSS,
       site_url: "https://www.theneedledrop.com/articles",
       slug: :the_needledrop,
       xpath_spec: default_xpath_spec,
-      xpath_subspec: [
-        title: ~x"./title/text()"s,
-        description: ~x"./description/text()"s,
-        image: ~x"./media:content/@url"s,
-        url: ~x"./link/text()"s,
-        date: ~x"./pubDate/text()"s
-      ]
+      xpath_subspec:
+        Keyword.merge(default_xpath_subspec,
+          image: ~x"./media:content/@url"s
+        )
     },
     %RSS.Config{
       name: "NME",
@@ -103,13 +100,7 @@ config :nudedisco, RSS,
       site_url: "https://pitchfork.com/reviews/albums/",
       slug: :pitchfork,
       xpath_spec: default_xpath_spec,
-      xpath_subspec: [
-        title: ~x"./title/text()"s,
-        description: ~x"./description/text()"s,
-        image: ~x"./media:thumbnail/@url"s,
-        url: ~x"./link/text()"s,
-        date: ~x"./pubDate/text()"s
-      ]
+      xpath_subspec: Keyword.merge(default_xpath_subspec, image: ~x"./media:thumbnail/@url"s)
     },
     %RSS.Config{
       name: "PopMatters",
@@ -125,12 +116,12 @@ config :nudedisco, RSS,
       site_url: "https://thequietus.com",
       slug: :the_quietus,
       xpath_spec: ~x"//entry"l,
-      xpath_subspec: [
-        title: ~x"./title/text()"s,
-        description: ~x"./content/text()"s,
-        url: ~x"./link/@href"s,
-        date: ~x"./published/text()"s
-      ]
+      xpath_subspec:
+        Keyword.merge(default_xpath_subspec,
+          description: ~x"./content/text()"s,
+          url: ~x"./link/@href"s,
+          date: ~x"./published/text()"s |> transform_by(&Timex.parse!(&1, "{RFC3339z}"))
+        )
     },
     %RSS.Config{
       name: "Rolling Stone",

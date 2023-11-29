@@ -15,7 +15,7 @@ defmodule RSSTest do
     assert is_bitstring(map.title)
     assert is_bitstring(map.description)
     assert is_bitstring(map.url)
-    assert is_bitstring(map.date)
+    assert Timex.is_valid?(map.date)
   end
 
   test "applications starts -> feeds populated" do

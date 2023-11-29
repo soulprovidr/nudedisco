@@ -37,27 +37,27 @@ defmodule Nudedisco.Playlist do
 
   @spec get_albums(list(String.t())) :: list()
   defp get_albums(album_ids) do
-    get_album = fn album_id ->
-      case Spotify.get_album(album_id) do
+    get_albums = fn album_ids ->
+      case Spotify.get_albums(album_ids) do
         {:ok, body} -> body
         _ -> nil
       end
     end
 
     album_ids
+    |> Enum.chunk_every(20)
     |> Task.async_stream(
-      get_album,
+      get_albums,
       ordered: false,
       timeout: 30 * 1000,
       on_timeout: :kill_task
     )
-    |> Enum.map(fn result ->
+    |> Enum.flat_map(fn result ->
       case result do
-        {:ok, value} -> value
+        {:ok, value} -> Map.get(value, "albums")
         _ -> nil
       end
     end)
-    |> Enum.reject(&is_nil/1)
   end
 
   @spec get_album_ids(list(metadata())) :: list(String.t())
@@ -98,13 +98,18 @@ defmodule Nudedisco.Playlist do
 
   @spec get_feed_items() :: list(RSS.Item.t())
   defp get_feed_items() do
+    cutoff_date = Timex.now() |> Timex.shift(days: -7)
+
+    is_from_past_week = fn item ->
+      Timex.after?(item.date, cutoff_date)
+    end
+
     RSS.get_feeds()
-    |> Enum.map(fn {_k, feed} -> Enum.take(feed.items, 5) end)
-    |> List.flatten()
+    |> Enum.flat_map(fn {_k, feed} -> feed.items end)
+    |> Enum.filter(is_from_past_week)
   end
 
-  @spec get_metadata(list(RSS.Item.t())) ::
-          list(metadata)
+  @spec get_metadata(list(RSS.Item.t())) :: [metadata]
   defp get_metadata(feed_items) do
     # Use GPT-3 to extract album names and artists from RSS feed items.
     extract_metadata = fn items ->
@@ -133,13 +138,12 @@ defmodule Nudedisco.Playlist do
       timeout: 30 * 1000,
       on_timeout: :kill_task
     )
-    |> Enum.map(fn result ->
+    |> Enum.flat_map(fn result ->
       case result do
         {:ok, metadata_items} -> metadata_items
         _ -> []
       end
     end)
-    |> List.flatten()
     |> Enum.reject(has_nil_metadata_values?)
   end
 

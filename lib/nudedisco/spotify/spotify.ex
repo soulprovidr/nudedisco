@@ -11,6 +11,14 @@ defmodule Nudedisco.Spotify do
     Spotify.Util.request(:get, "https://api.spotify.com/v1/albums/#{album_id}")
   end
 
+  @spec get_albums([String.t()]) :: :error | {:ok, any}
+  def get_albums(album_ids) do
+    Spotify.Util.request(
+      :get,
+      "https://api.spotify.com/v1/albums?" <> URI.encode_query(%{ids: Enum.join(album_ids, ",")})
+    )
+  end
+
   @spec get_album_tracks(String.t()) :: :error | {:ok, any}
   def get_album_tracks(album_id) do
     Spotify.Util.request(:get, "https://api.spotify.com/v1/albums/#{album_id}/tracks")
