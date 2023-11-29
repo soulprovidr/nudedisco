@@ -1,7 +1,5 @@
 import Config
 
-alias Nudedisco.Listmonk
-alias Nudedisco.OpenAI
 alias Nudedisco.Playlist
 alias Nudedisco.Scheduler
 
@@ -10,8 +8,12 @@ config :nudedisco,
 
 config :nudedisco, Scheduler,
   jobs: [
-    playlist_sync: [
+    playlist_create: [
       schedule: "0 7 * * 5",
       task: {Playlist, :create, [notify: true]}
+    ],
+    rss_sync: [
+      schedule: "@hourly",
+      task: {Playlist.RSS, :sync, []}
     ]
   ]

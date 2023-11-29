@@ -9,15 +9,13 @@ defmodule Nudedisco.RSS do
           atom() => RSS.Feed.t()
         }
 
-  @update_interval 60 * 60 * 1000
-
   def start_link(_) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   @impl true
   def init(_) do
-    {:noreply, state} = handle_info(:update, %{})
+    {:noreply, state} = handle_info(:sync, %{})
     {:ok, state}
   end
 
@@ -46,21 +44,16 @@ defmodule Nudedisco.RSS do
     |> Enum.into(%{}, fn {:ok, feed} -> {feed.slug, feed} end)
   end
 
-  defp schedule_update do
-    Process.send_after(self(), :update, @update_interval)
-  end
-
   @impl true
   def handle_call(:get_feeds, _from, state) do
     {:reply, state, state}
   end
 
   @impl true
-  def handle_info(:update, state) do
-    Logger.debug("[RSS] Updating RSS feeds...")
+  def handle_info(:sync, state) do
+    Logger.debug("[RSS] Syncing RSS feeds...")
     new_state = Map.merge(state, hydrate_feeds())
-    Logger.debug("[RSS] Updated RSS feeds.")
-    schedule_update()
+    Logger.debug("[RSS] Successfully synced RSS feeds.")
     {:noreply, new_state}
   end
 end
