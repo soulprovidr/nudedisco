@@ -1,6 +1,7 @@
 import Config
 
 alias Nudedisco.Playlist
+alias Nudedisco.RSS
 alias Nudedisco.Scheduler
 
 config :nudedisco,
