@@ -1,29 +1,30 @@
 defmodule Nudedisco.Spotify do
-  @moduledoc """
-  Wrapper around Spotify API functionality.
-
-  See the [Spotify Web API docs](https://developer.spotify.com/documentation/web-api/) for more information.
-  """
-
-  use GenServer
-
   alias Nudedisco.Spotify
 
-  def init(_) do
-    children = [
-      {Spotify.Auth, name: Spotify.Auth}
-    ]
-
-    Supervisor.start_link(children, strategy: :one_for_one)
+  def child_spec(opts \\ []) do
+    %{
+      id: Spotify,
+      start: {Spotify.Auth, :start_link, [opts]},
+      type: :worker
+    }
   end
 
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
+  @spec is_authorized?() :: boolean()
+  def is_authorized?() do
+    Spotify.Auth.is_authorized?()
   end
 
   @spec get_album(String.t()) :: :error | {:ok, any}
   def get_album(album_id) do
     Spotify.Util.request(:get, "https://api.spotify.com/v1/albums/#{album_id}")
+  end
+
+  @spec get_albums([String.t()]) :: :error | {:ok, any}
+  def get_albums(album_ids) do
+    Spotify.Util.request(
+      :get,
+      "https://api.spotify.com/v1/albums?" <> URI.encode_query(%{ids: Enum.join(album_ids, ",")})
+    )
   end
 
   @spec get_album_tracks(String.t()) :: :error | {:ok, any}

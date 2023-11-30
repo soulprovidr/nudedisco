@@ -1,63 +1,5 @@
 defmodule Nudedisco.Playlist.Constants do
-  @fresh_emojis ["🥝", "🍓", "🍇", "🥑", "🍒", "🍍", "🍋", "🍉", "🥭", "🫐", "🍎", "🍊"]
-
-  @spec email_subject() :: String.t()
-  def email_subject() do
-    date =
-      DateTime.utc_now()
-      |> Calendar.strftime("%m/%d")
-
-    "nudedis.co's Fresh Fridays: your #{date} playlist is live ⚡️"
-  end
-
-  @spec email_body([Nudedisco.Playlist.Item.t()]) :: String.t()
-  def email_body(playlist_items) do
-    date =
-      DateTime.utc_now()
-      |> Calendar.strftime("%B %d, %Y")
-
-    emoji = Enum.random(@fresh_emojis)
-
-    tracklist_rows =
-      playlist_items
-      |> Enum.map(fn item ->
-        """
-        <tr>
-          <td>
-            <img
-              alt="Cover art for #{item.album} by #{item.artist}"
-              class="cover"
-              src="#{item.image}"
-            />
-          </td>
-          <td>
-            <div class="title">#{item.title}</div>
-            <div class="artist">#{item.artist}</div>
-          </td>
-        </tr>
-        """
-      end)
-      |> Enum.join("\r")
-
-    """
-    ## #{date}: what's fresh this week #{emoji}
-
-    Get your weekend started with brand new music – reviewed by the Internet's top music minds, including Pitchfork, Bandcamp, and more.
-
-    <a
-      class="button"
-      href="https://open.spotify.com/playlist/098JzO5hMPu4sfy850iJNz">
-      Listen on Spotify
-    </a>
-
-    <hr />
-
-    ### Tracklist:
-    <table role="presentation">
-    #{tracklist_rows}
-    </table>
-    """
-  end
+  alias Nudedisco.Playlist
 
   @system_prompt "Using the data present in an array of JSON objects representing RSS feed items for music album reviews, provide a JSON array containing a list of JSON objects of the following form: [{album: '<album>', artist: '<artist>'}, ...].
 
@@ -93,8 +35,16 @@ defmodule Nudedisco.Playlist.Constants do
 
   - [{'album': 'Abbey Road', 'artist': 'The Beatles'}]"
 
+  @spec listmonk_list_id() :: String.t()
+  def listmonk_list_id, do: Application.get_env(:nudedisco, Playlist)[:listmonk_list_id]
+
+  @spec listmonk_template_id() :: String.t()
+  def listmonk_template_id,
+    do: Application.get_env(:nudedisco, Playlist)[:listmonk_template_id]
+
+  @spec spotify_playlist_id() :: String.t()
+  def spotify_playlist_id, do: Application.get_env(:nudedisco, Playlist)[:spotify_playlist_id]
+
   @spec system_prompt() :: String.t()
   def system_prompt, do: @system_prompt
-
-  def playlist_id(), do: Application.get_env(:nudedisco, :spotify_playlist_id)
 end

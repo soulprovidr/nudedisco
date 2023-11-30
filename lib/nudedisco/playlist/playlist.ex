@@ -5,41 +5,62 @@ defmodule Nudedisco.Playlist do
   Uses the GPT-3 API to extract artist/album metadata from RSS feeds, then
   uses the Spotify API to create a playlist based on this metadata.
   """
+  use Task, restart: :transient
 
-  alias Nudedisco.Listmonk
   alias Nudedisco.OpenAI
   alias Nudedisco.Playlist
   alias Nudedisco.RSS
   alias Nudedisco.Spotify
 
+  require Logger
+
   @type metadata :: %{album: String.t(), artist: String.t()}
+  @type opts :: [notify: boolean()]
+
+  @spec start_link(opts()) :: {:ok, pid()}
+  def start_link(opts \\ []) do
+    Task.start_link(__MODULE__, :create, opts)
+  end
+
+  @spec create(opts()) :: {:error, String.t()} | :ok
+  def create(opts \\ []) do
+    case Spotify.is_authorized?() do
+      true ->
+        with {:ok, _} <- update_playlist(opts) do
+          :ok
+        end
+
+      false ->
+        {:error, "Not authorized to use the Spotify API."}
+    end
+  end
 
   @spec get_albums(list(String.t())) :: list()
-  def get_albums(album_ids) do
-    get_album = fn album_id ->
-      case Spotify.get_album(album_id) do
+  defp get_albums(album_ids) do
+    get_albums = fn album_ids ->
+      case Spotify.get_albums(album_ids) do
         {:ok, body} -> body
         _ -> nil
       end
     end
 
     album_ids
+    |> Enum.chunk_every(20)
     |> Task.async_stream(
-      get_album,
+      get_albums,
       ordered: false,
       timeout: 30 * 1000,
       on_timeout: :kill_task
     )
-    |> Enum.map(fn result ->
+    |> Enum.flat_map(fn result ->
       case result do
-        {:ok, value} -> value
+        {:ok, value} -> Map.get(value, "albums")
         _ -> nil
       end
     end)
-    |> Enum.reject(&is_nil/1)
   end
 
-  @spec get_album_ids(list(metadata)) :: list(String.t())
+  @spec get_album_ids(list(metadata())) :: list(String.t())
   defp get_album_ids(metadata_items) do
     get_album_id = fn metadata_item ->
       %{album: album, artist: artist} = metadata_item
@@ -77,13 +98,18 @@ defmodule Nudedisco.Playlist do
 
   @spec get_feed_items() :: list(RSS.Item.t())
   defp get_feed_items() do
+    cutoff_date = Timex.now() |> Timex.shift(days: -7)
+
+    is_from_past_week = fn item ->
+      Timex.after?(item.date, cutoff_date)
+    end
+
     RSS.get_feeds()
-    |> Enum.map(fn {_k, feed} -> Enum.take(feed.items, 5) end)
-    |> List.flatten()
+    |> Enum.flat_map(fn {_k, feed} -> feed.items end)
+    |> Enum.filter(is_from_past_week)
   end
 
-  @spec get_metadata(list(RSS.Item.t())) ::
-          list(metadata)
+  @spec get_metadata(list(RSS.Item.t())) :: [metadata]
   defp get_metadata(feed_items) do
     # Use GPT-3 to extract album names and artists from RSS feed items.
     extract_metadata = fn items ->
@@ -112,13 +138,12 @@ defmodule Nudedisco.Playlist do
       timeout: 30 * 1000,
       on_timeout: :kill_task
     )
-    |> Enum.map(fn result ->
+    |> Enum.flat_map(fn result ->
       case result do
         {:ok, metadata_items} -> metadata_items
         _ -> []
       end
     end)
-    |> List.flatten()
     |> Enum.reject(has_nil_metadata_values?)
   end
 
@@ -151,29 +176,28 @@ defmodule Nudedisco.Playlist do
     |> Enum.map(create_playlist_item)
   end
 
-  @spec sync! :: boolean()
-  def sync! do
-    if !Spotify.Auth.is_authorized?() do
-      IO.puts("[Playlist] Application not authorized to use Spotify API.")
-      false
-    end
+  @spec update_playlist(opts()) :: :error | {:ok, list(Playlist.Item.t())}
+  defp update_playlist(opts) do
+    Logger.debug("[Playlist] Updating playlist...")
 
-    playlist_items = get_playlist_items()
-    track_uris = Enum.map(playlist_items, & &1.track_uri)
+    playlist_id = Playlist.Constants.spotify_playlist_id()
+    notify = Keyword.get(opts, :notify, false)
 
-    case Spotify.set_playlist_tracks(Playlist.Constants.playlist_id(), track_uris) do
-      {:ok, _} ->
-        IO.puts("[Playlist] Successfully created playlist.")
+    with playlist_items <- get_playlist_items(),
+         track_uris <- Enum.map(playlist_items, & &1.track_uri),
+         {:ok, _} <- Spotify.set_playlist_tracks(playlist_id, track_uris) do
+      Logger.info("[Playlist] Successfully updated playlist.")
 
-        subject = Playlist.Constants.email_subject()
-        body = Playlist.Constants.email_body(playlist_items)
+      if notify do
+        Playlist.Notification.send(playlist_items: playlist_items)
+      end
 
-        with {:ok, campaign_id} <- Listmonk.create_campaign(subject, body),
-             {:ok, _} <- Listmonk.start_campaign(campaign_id) do
-          true
-        else
-          _ -> false
-        end
+      {:ok, playlist_items}
+    else
+      _ ->
+        Logger.error("[Playlist] Failed to update playlist.")
+
+        :error
     end
   end
 end

@@ -1,7 +1,6 @@
 import Config
 
 alias Nudedisco.Playlist
-alias Nudedisco.RSS
 alias Nudedisco.Scheduler
 
 config :nudedisco,
@@ -9,12 +8,15 @@ config :nudedisco,
 
 config :nudedisco, Scheduler,
   jobs: [
-    playlist_sync: [
+    playlist_create: [
       schedule: "0 7 * * 5",
-      task: {Playlist, :sync!, []}
+      task: {Playlist, :create, [notify: true]}
     ],
     rss_sync: [
       schedule: "@hourly",
-      task: {RSS, :sync!, []}
+      task: {RSS, :sync, []}
     ]
   ]
+
+IO.puts("config_env: #{config_env()}")
+import_config("#{config_env()}.exs")
