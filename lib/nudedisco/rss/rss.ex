@@ -27,15 +27,15 @@ defmodule Nudedisco.RSS do
     GenServer.call(__MODULE__, :get_feeds)
   end
 
-  @spec get_feed_configs() :: [RSS.Feed.Config.t()]
-  defp get_feed_configs() do
+  @spec get_configs() :: [RSS.Config.t()]
+  defp get_configs() do
     Application.get_env(:nudedisco, RSS)
-    |> Keyword.get(:feed_configs, [])
+    |> Keyword.get(:configs, [])
   end
 
   @spec hydrate_feeds() :: state()
   defp hydrate_feeds() do
-    get_feed_configs()
+    get_configs()
     |> Task.async_stream(&RSS.Config.hydrate/1,
       ordered: false,
       timeout: 30 * 1000
