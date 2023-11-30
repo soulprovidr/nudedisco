@@ -4,14 +4,15 @@ defmodule Nudedisco.Listmonk do
 
   require Logger
 
-  defp api_url(), do: Application.get_env(:nudedisco, Listmonk)[:api_url]
-  defp admin_user(), do: Application.get_env(:nudedisco, Listmonk)[:admin_user]
-  defp admin_password(), do: Application.get_env(:nudedisco, Listmonk)[:admin_password]
+  defp api_url, do: Application.get_env(:nudedisco, Listmonk)[:api_url]
+  defp admin_user, do: Application.get_env(:nudedisco, Listmonk)[:admin_user]
+  defp admin_password, do: Application.get_env(:nudedisco, Listmonk)[:admin_password]
 
-  defp get_authorization_header() do
-    token = Base.encode64("#{admin_user()}:#{admin_password()}")
-    {"Authorization", "Basic #{token}"}
-  end
+  defp authorization_header(),
+    do: {"Authorization", "Basic #{Base.encode64("#{admin_user()}:#{admin_password()}")}"}
+
+  defp headers(content_type \\ "application/json"),
+    do: [{"Content-Type", content_type}, authorization_header()]
 
   @spec create_campaign(String.t(), String.t(), list()) :: :error | {:ok, any()}
   def create_campaign(subject, body, opts \\ []) do
@@ -29,14 +30,9 @@ defmodule Nudedisco.Listmonk do
         "body" => body
       })
 
-    headers = [
-      {"Content-Type", "application/json"},
-      get_authorization_header()
-    ]
-
     url = "#{api_url()}/campaigns"
 
-    with {:ok, body} <- Util.request(:post, url, body, headers) do
+    with {:ok, body} <- Util.request(:post, url, body, headers()) do
       Logger.debug("[Listmonk] Successfully sent email.")
       %{"data" => %{"id" => campaign_id}} = Poison.decode!(body)
       {:ok, campaign_id}
@@ -55,14 +51,9 @@ defmodule Nudedisco.Listmonk do
         "status" => "running"
       })
 
-    headers = [
-      {"Content-Type", "application/json"},
-      get_authorization_header()
-    ]
-
     url = "#{api_url()}/campaigns/#{campaign_id}/status"
 
-    with {:ok, body} <- Util.request(:put, url, body, headers) do
+    with {:ok, body} <- Util.request(:put, url, body, headers()) do
       Logger.debug("[Listmonk] Successfully started campaign.")
       {:ok, body}
     else
@@ -84,14 +75,9 @@ defmodule Nudedisco.Listmonk do
         "status" => "enabled"
       })
 
-    headers = [
-      {"Content-Type", "application/json"},
-      get_authorization_header()
-    ]
-
     url = "#{api_url()}/subscribers"
 
-    with {:ok, body} <- Util.request(:post, url, body, headers) do
+    with {:ok, body} <- Util.request(:post, url, body, headers()) do
       Logger.debug("[Listmonk] Successfully created subscriber.")
       {:ok, body}
     else
