@@ -9,7 +9,6 @@ defmodule Nudedisco.Application do
   alias Nudedisco.Web
 
   @impl true
-  @spec start(any(), any()) :: {:error, any()} | {:ok, pid()}
   def start(_type, _args) do
     Supervisor.start_link(
       [
