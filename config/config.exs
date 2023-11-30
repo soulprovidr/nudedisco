@@ -19,4 +19,4 @@ config :nudedisco, Scheduler,
   ]
 
 IO.puts("config_env: #{config_env()}")
-import_config("#{Mix.env()}.exs")
+import_config("#{config_env()}.exs")

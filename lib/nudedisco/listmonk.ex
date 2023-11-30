@@ -8,11 +8,11 @@ defmodule Nudedisco.Listmonk do
   defp admin_user, do: Application.get_env(:nudedisco, Listmonk)[:admin_user]
   defp admin_password, do: Application.get_env(:nudedisco, Listmonk)[:admin_password]
 
-  defp authorization_header(),
-    do: {"Authorization", "Basic #{Base.encode64("#{admin_user()}:#{admin_password()}")}"}
-
   defp headers(content_type \\ "application/json"),
-    do: [{"Content-Type", content_type}, authorization_header()]
+    do: [
+      {"Authorization", "Basic #{Base.encode64("#{admin_user()}:#{admin_password()}")}"},
+      {"Content-Type", content_type}
+    ]
 
   @spec create_campaign(String.t(), String.t(), list()) :: :error | {:ok, any()}
   def create_campaign(subject, body, opts \\ []) do

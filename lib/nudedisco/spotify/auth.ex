@@ -24,6 +24,12 @@ defmodule Nudedisco.Spotify.Auth do
   defp client_secret, do: Application.get_env(:nudedisco, Spotify)[:client_secret]
   defp redirect_uri, do: Application.get_env(:nudedisco, Spotify)[:redirect_uri]
 
+  defp headers,
+    do: [
+      {"Accept", "application/json"},
+      {"Authorization", "Basic #{Base.encode64("#{client_id()}:#{client_secret()}")}"}
+    ]
+
   def start_link(_) do
     GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
@@ -65,12 +71,7 @@ defmodule Nudedisco.Spotify.Auth do
     url = "https://accounts.spotify.com/api/token"
     body = {:form, [{"grant_type", "refresh_token"}, {"refresh_token", refresh_token}]}
 
-    headers = [
-      {"Accept", "application/json"},
-      {"Authorization", "Basic #{Base.encode64("#{client_id()}:#{client_secret()}")}"}
-    ]
-
-    case Util.request(:post, url, body, headers) do
+    case Util.request(:post, url, body, headers()) do
       {:ok, body} ->
         %{
           "access_token" => access_token,
@@ -152,12 +153,7 @@ defmodule Nudedisco.Spotify.Auth do
       {:form,
        [{"grant_type", "authorization_code"}, {"code", code}, {"redirect_uri", redirect_uri()}]}
 
-    headers = [
-      {"Accept", "application/json"},
-      {"Authorization", "Basic #{Base.encode64("#{client_id()}:#{client_secret()}")}"}
-    ]
-
-    case Util.request(:post, url, body, headers) do
+    case Util.request(:post, url, body, headers()) do
       {:ok, body} ->
         %{
           "access_token" => access_token,
