@@ -14,6 +14,6 @@ config :nudedisco, Scheduler,
     ],
     rss_sync: [
       schedule: "@hourly",
-      task: {Playlist.RSS, :sync, []}
+      task: {RSS, :sync, []}
     ]
   ]
