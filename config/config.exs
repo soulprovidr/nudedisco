@@ -17,3 +17,6 @@ config :nudedisco, Scheduler,
       task: {RSS, :sync, []}
     ]
   ]
+
+IO.puts("config_env: #{config_env()}")
+import_config("#{Mix.env()}.exs")
