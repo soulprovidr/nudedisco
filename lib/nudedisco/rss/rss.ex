@@ -15,7 +15,7 @@ defmodule Nudedisco.RSS do
 
   @impl true
   def init(_) do
-    {:noreply, state} = handle_info(:sync, %{})
+    {:noreply, state} = handle_cast(:sync, %{})
     {:ok, state}
   end
 
@@ -44,13 +44,17 @@ defmodule Nudedisco.RSS do
     |> Enum.into(%{}, fn {:ok, feed} -> {feed.slug, feed} end)
   end
 
+  def sync() do
+    GenServer.cast(__MODULE__, :sync)
+  end
+
   @impl true
   def handle_call(:get_feeds, _from, state) do
     {:reply, state, state}
   end
 
   @impl true
-  def handle_info(:sync, state) do
+  def handle_cast(:sync, state) do
     Logger.debug("[RSS] Syncing RSS feeds...")
     new_state = Map.merge(state, hydrate_feeds())
     Logger.debug("[RSS] Successfully synced RSS feeds.")
