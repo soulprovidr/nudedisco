@@ -1,6 +1,14 @@
 defmodule Nudedisco.Spotify do
   alias Nudedisco.Spotify
 
+  def child_spec(opts \\ []) do
+    %{
+      id: Spotify,
+      start: {Spotify.Auth, :start_link, [opts]},
+      type: :worker
+    }
+  end
+
   @spec is_authorized?() :: boolean()
   def is_authorized?() do
     Spotify.Auth.is_authorized?()

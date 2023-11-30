@@ -13,7 +13,7 @@ defmodule Nudedisco.Application do
     Supervisor.start_link(
       [
         {RSS, name: :rss},
-        {Spotify.Auth, name: :spotify_auth},
+        {Spotify, name: :spotify},
         {Scheduler, name: :scheduler},
         {Web, name: :web}
       ],
