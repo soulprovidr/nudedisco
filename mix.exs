@@ -29,7 +29,8 @@ defmodule Nudedisco.MixProject do
       {:poison, "~> 5.0"},
       {:quantum, "~> 3.0"},
       {:sweet_xml, "~> 0.7.1"},
-      {:timex, "~> 3.0"}
+      {:timex, "~> 3.0"},
+      {:tzdata, "~> 1.1"}
     ]
   end
 end
