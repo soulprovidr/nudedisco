@@ -1,6 +1,6 @@
 <% {feed, count} = feed_tuple %>
 
-<%= if feed.items != nil do %>
+<%= if feed != nil && feed.items != nil do %>
 <section>
   <h4><a href="<%= feed.site_url %>" target="_blank"><%= feed.name %></a></h4>
   <div class="row">
