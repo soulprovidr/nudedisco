@@ -14,7 +14,7 @@ config :nudedisco, Scheduler,
   jobs: [
     playlist_create: [
       schedule: "0 7 * * 5",
-      task: {Playlist, :create, [notify: true]}
+      task: {Playlist, :create, [[notify: true]]}
     ],
     rss_sync: [
       schedule: "@hourly",

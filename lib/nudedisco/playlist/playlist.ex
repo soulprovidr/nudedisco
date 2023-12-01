@@ -17,11 +17,6 @@ defmodule Nudedisco.Playlist do
   @type metadata :: %{album: String.t(), artist: String.t()}
   @type opts :: [notify: boolean()]
 
-  @spec start_link(opts()) :: {:ok, pid()}
-  def start_link(opts \\ []) do
-    Task.start_link(__MODULE__, :create, opts)
-  end
-
   @spec create(opts()) :: {:error, String.t()} | :ok
   def create(opts \\ []) do
     case Spotify.is_authorized?() do
@@ -147,7 +142,7 @@ defmodule Nudedisco.Playlist do
     |> Enum.reject(has_nil_metadata_values?)
   end
 
-  defp get_playlist_items() do
+  defp get_playlist_items do
     create_playlist_item = fn album ->
       random_track =
         Map.get(album, "tracks")
@@ -180,8 +175,8 @@ defmodule Nudedisco.Playlist do
   defp update_playlist(opts) do
     Logger.debug("[Playlist] Updating playlist...")
 
-    playlist_id = Playlist.Constants.spotify_playlist_id()
     notify = Keyword.get(opts, :notify, false)
+    playlist_id = Playlist.Constants.spotify_playlist_id()
 
     with playlist_items <- get_playlist_items(),
          track_uris <- Enum.map(playlist_items, & &1.track_uri),
