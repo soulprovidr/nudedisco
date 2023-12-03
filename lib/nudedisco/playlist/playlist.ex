@@ -150,16 +150,17 @@ defmodule Nudedisco.Playlist do
         |> Enum.random()
 
       %Playlist.Item{
-        album: Map.get(album, "name"),
+        album: Map.get(album, "name") |> sanitize(),
         artist:
           Map.get(album, "artists", [])
           |> List.first()
-          |> Map.get("name"),
+          |> Map.get("name")
+          |> sanitize(),
         image:
           Map.get(album, "images", [])
           |> List.first()
           |> Map.get("url"),
-        title: Map.get(random_track, "name"),
+        title: Map.get(random_track, "name") |> sanitize(),
         track_uri: Map.get(random_track, "uri")
       }
     end
@@ -169,6 +170,11 @@ defmodule Nudedisco.Playlist do
     |> get_album_ids()
     |> get_albums()
     |> Enum.map(create_playlist_item)
+  end
+
+  defp sanitize(string) do
+    string
+    |> String.replace("\"", "'")
   end
 
   @spec update_playlist(opts()) :: :error | {:ok, list(Playlist.Item.t())}
