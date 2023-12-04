@@ -23,4 +23,9 @@ defmodule Nudedisco.Web.Controllers.Spotify do
         |> set_body("Spotify authorization failed.")
     end
   end
+
+  @impl Raxx.SimpleServer
+  def handle_request(_, _) do
+    response(:not_implemented)
+  end
 end

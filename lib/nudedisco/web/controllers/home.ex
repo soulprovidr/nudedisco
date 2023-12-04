@@ -4,6 +4,8 @@ defmodule Nudedisco.Web.Controllers.Home do
   alias Nudedisco.RSS
   alias Nudedisco.Web
 
+  require Logger
+
   @impl Raxx.SimpleServer
   def handle_request(%{method: :GET, path: []}, _) do
     feeds = RSS.get_feeds()
@@ -33,9 +35,8 @@ defmodule Nudedisco.Web.Controllers.Home do
     )
   end
 
-  def handle_request(%{method: :GET, path: ["about"]}, _) do
-    response(:ok)
-    |> set_header("content-type", "text/html")
-    |> set_body("About")
+  @impl Raxx.SimpleServer
+  def handle_request(_, _) do
+    response(:not_implemented)
   end
 end
