@@ -37,18 +37,63 @@ h4 a:hover {
   border-color: #1b2940;
 }
 
-.playlist {
+.toast {
+  background: white;
+  border-top: 1px solid #ddd;
   display: flex;
   font-size: 16px;
   gap: 18px;
+  justify-content: space-between;
+  padding: 24px 48px;
+  position: fixed;
+  right: 0; bottom: 0; left: 0;
 }
 
-.playlist .icon.mobile {
-  display: none;
+.playlist {
+  align-items: center;
+}
+
+.playlist__content {
+  display: flex;
+  gap: 18px;
+}
+
+.playlist__icon {
+  border-radius: 50%;
+}
+
+.playlist__icon + .playlist__icon {
+  margin-left: -28px;
+}
+
+.playlist__action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.playlist__form {
+  display: flex;
+  gap: 12px;
+}
+
+.playlist__form input {
+  margin: 0;
+  width: 250px;
+}
+
+.playlist__form button {
+  margin: 0;
+}
+
+.playlist__link {
+  color: #767676;
+  font-size: 14px;
 }
 
 .playlist h4 {
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .item a,
@@ -126,23 +171,21 @@ footer {
   transform: scale(1.1);
 }
 
+.mobile {
+  display: none;
+}
+
 @media screen and (max-width: 40rem) {
-  .playlist .icon.desktop {
+  .desktop {
     display: none;
   }
 
-  .playlist .icon.mobile {
-    display: inline-block;
-    margin-right: 8px;
-    vertical-align: sub;
+  .mobile {
+    display: inherit;
   }
 
-  .playlist h4 {
-    display: inline-block;
-  }
-
-  .playlist .button {
-    width: 100%;
+  .toast {
+    border-radius: 32px 32px 0 0;
   }
 
   .column {

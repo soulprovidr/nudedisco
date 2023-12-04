@@ -56,36 +56,6 @@
   <body>
     <div class="container">
       <header>nudedisco</header>
-      <section class="playlist">
-        <img
-          class="icon desktop"
-          height="48"
-          src="spotify.svg"
-          width="48"
-        />
-        <div>
-          <img
-            class="icon mobile"
-            height="24"
-            src="spotify.svg"
-            width="24"
-          />
-          <h4>Fresh Fridays on Spotify</h4>
-          <p>
-            Discover new artists and albums reviewed by some of the Internet's
-            top music blogs and publications &mdash; including Pitchfork, The Guardian,
-            &amp; many more &mdash; on the official nudedisco playlist. Updated every
-            Friday.
-          </p>
-          <a
-            class="button"
-            href="https://open.spotify.com/playlist/3FxuIvXkD3JvLKstWBLfff?si=373af23c5c3b48ad"
-            target="_blank"
-          >
-            Listen Now
-          </a>
-        </div>
-      </section>
 
       <%= Enum.join(sections) %>
 
@@ -101,6 +71,55 @@
         </a>
       </footer>
     </div>
+
+    <div class="toast playlist">
+      <div class="playlist__content">
+        <img
+          class="playlist__icon desktop"
+          height="48"
+          src="sp-logo.png"
+          width="48"
+        />
+        <img
+          class="playlist__icon desktop"
+          height="48"
+          src="spotify.svg"
+          width="48"
+        />
+        <img
+          class="playlist__icon mobile"
+          height="24"
+          src="sp-logo.png"
+          width="24"
+        />
+        <img
+          class="playlist__icon mobile"
+          height="24"
+          src="spotify.svg"
+          width="24"
+        />
+        <div>
+          <h4>Fresh Fridays on Spotify</h4>
+          <div>
+            Get the official nudedisco playlist – featuring the week's top album releases – delivered directly to your inbox every Friday.
+          </div>
+        </div>
+      </div>
+      <div class="playlist__action">
+        <div class="playlist__form">
+          <input type="email" />
+          <button class="button">Subscribe</button>
+        </div>
+        <a
+          class="playlist__link"
+          href="https://open.spotify.com/playlist/3FxuIvXkD3JvLKstWBLfff?si=373af23c5c3b48ad"
+          target="_blank"
+        >
+          No thanks, just take me to the playlist →
+        </a>
+      </div>
+    </div>
+
     <script type="text/javascript">
       // Prevent iframes from loading scripts.
       Array.from(window.frames).forEach((f) => f.stop());
