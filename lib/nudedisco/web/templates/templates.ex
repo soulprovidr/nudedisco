@@ -20,4 +20,18 @@ defmodule Nudedisco.Web.Templates do
       :feed_tuple
     ]
   )
+
+  EEx.function_from_file(
+    :def,
+    :subscription_success,
+    "lib/nudedisco/web/templates/partials/subscription_success.html.eex",
+    []
+  )
+
+  EEx.function_from_file(
+    :def,
+    :subscription_error,
+    "lib/nudedisco/web/templates/partials/subscription_error.html.eex",
+    []
+  )
 end

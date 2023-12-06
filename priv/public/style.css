@@ -6,6 +6,10 @@ body {
   padding: 32px 0;
 }
 
+input[type='email']:focus {
+  border-color: #1b2940;
+}
+
 header {
   top: 0;
   right: 0;
@@ -37,16 +41,37 @@ h4 a:hover {
   border-color: #1b2940;
 }
 
+@keyframes toastEnter {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .toast {
+  animation: toastEnter 200ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation-delay: 1s;
+  animation-fill-mode: forwards;
   background: white;
   border-top: 1px solid #ddd;
   display: flex;
   font-size: 16px;
   gap: 18px;
+  transform: translateY(100%);
   justify-content: space-between;
   padding: 16px 48px;
   position: fixed;
   right: 0; bottom: 0; left: 0;
+  transition: opacity 200ms ease,
+              transform 200ms cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.toast.htmx-swapping {
+
 }
 
 .playlist {
@@ -76,6 +101,7 @@ h4 a:hover {
 .playlist__form {
   display: flex;
   gap: 12px;
+  margin-bottom: 0;
 }
 
 .playlist__form input {
@@ -89,7 +115,7 @@ h4 a:hover {
 
 .playlist__link {
   color: #767676;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .playlist h4 {

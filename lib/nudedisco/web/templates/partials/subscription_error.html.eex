@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="RSS-powered album reviews aggregator." />
+    <meta name="image" content="https://nudedis.co/preview.jpg" />
+
+    <meta itemprop="name" content="nudedisco" />
+    <meta
+      itemprop="description"
+      content="RSS-powered album reviews aggregator."
+    />
+    <meta itemprop="image" content="https://nudedis.co/preview.jpg" />
+
+    <meta property="twitter:card" content="summary" />
+    <meta property="twitter:title" content="nudedisco" />
+    <meta
+      property="twitter:description"
+      content="RSS-powered album reviews aggregator."
+    />
+    <meta property="twitter:site" content="@soulprovidrfm" />
+    <meta
+      property="twitter:image:src"
+      content="https://nudedis.co/preview.jpg"
+    />
+
+    <meta property="og:title" content="nudedisco" />
+    <meta
+      property="og:description"
+      content="RSS-powered album reviews aggregator."
+    />
+    <meta property="og:image" content="https://nudedis.co/preview.jpg" />
+    <meta property="og:url" content="https://nudedis.co" />
+    <meta property="og:site_name" content="nudedisco" />
+    <meta property="og:type" content="website" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=MuseoModerno&family=Roboto:ital,wght@0,300;0,700;1,300;1,700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"
+    />
+    <link rel="stylesheet" href="/style.css" />
+
+    <link rel="apple-touch-icon" href="/apple-touch-icon.jpg" />
+    <link rel="icon" href="/favicon.ico" />
+
+    <title>Something went wrong! | nudedisco</title>
+  </head>
+
+  <style>
+    html {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 24px;
+      text-align: center;
+    }
+  </style>
+
+  <body>
+    <div class="container">
+      <h4>Something went wrong ☠️</h4>
+      <p>
+        We couldn't create your subscription. Please try again later.
+      </p>
+      <div>
+        <a class="button" href="https://nudedis.co">Back to nudedis.co</a>
+      </div>
+    </div>
+
+    <script
+      defer
+      data-domain="nudedis.co"
+      src="https://analytics.amnoob.cool/js/script.js">
+    </script>
+  </body>
+</html>

@@ -46,7 +46,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/style.css" />
 
     <link rel="apple-touch-icon" href="apple-touch-icon.jpg" />
     <link rel="icon" href="favicon.ico" />
@@ -106,10 +106,14 @@
         </div>
       </div>
       <div class="playlist__action">
-        <div class="playlist__form">
-          <input type="email" />
-          <button class="button">Subscribe</button>
-        </div>
+        <form
+          class="playlist__form"
+          action="/subscriptions"
+          method="post"
+        >
+          <input name="email" type="email" placeholder="Enter your email address..." />
+          <button class="button" type="submit">Subscribe</button>
+        </form>
         <a
           class="playlist__link"
           href="https://open.spotify.com/playlist/3FxuIvXkD3JvLKstWBLfff?si=373af23c5c3b48ad"
@@ -124,6 +128,7 @@
       // Prevent iframes from loading scripts.
       Array.from(window.frames).forEach((f) => f.stop());
     </script>
+
     <script
       defer
       data-domain="nudedis.co"
