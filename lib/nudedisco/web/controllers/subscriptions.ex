@@ -1,21 +1,16 @@
 defmodule Nudedisco.Web.Controllers.Subscriptions do
   use Raxx.SimpleServer
 
-  alias Nudedisco.Listmonk
+  alias Nudedisco.Playlist
 
   require Logger
 
   def handle_request(%{method: :POST, path: ["subscriptions"], body: body}, _) do
     with %{"email" => email} <- URI.decode_query(body),
-         {:ok, _} <- Listmonk.create_subscriber(email) do
-      Logger.debug("[Listmonk] Successfully created subscriber: #{email}")
-
+         {:ok, _} <- Playlist.Notification.create_subscriber(email) do
       redirect("/subscriptions/success")
     else
-      _ ->
-        Logger.debug("[Listmonk] Failed to create subscriber.")
-
-        redirect("/subscriptions/error")
+      _ -> redirect("/subscriptions/error")
     end
   end
 

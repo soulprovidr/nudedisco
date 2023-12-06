@@ -8,6 +8,13 @@ defmodule Nudedisco.Playlist.Notification do
 
   @fresh_emojis ["🥝", "🍓", "🍇", "🥑", "🍒", "🍍", "🍋", "🍉", "🥭", "🫐", "🍎", "🍊"]
 
+  @spec create_subscriber(String.t()) :: :error | {:ok, any()}
+  def create_subscriber(email) do
+    list_id = Playlist.Constants.listmonk_list_id()
+
+    Listmonk.create_subscriber(email, list_id: list_id)
+  end
+
   @spec email_subject() :: String.t()
   defp email_subject() do
     date =
