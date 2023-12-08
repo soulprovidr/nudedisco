@@ -23,6 +23,8 @@ defmodule Nudedisco.MixProject do
       {:ace, "~> 0.19.0"},
       {:cachex, "~> 3.6"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:ecto_sql, "~> 3.0"},
+      {:ecto_sqlite3, "~> 0.13"},
       {:mime, "~> 2.0"},
       {:raxx, "~> 1.1"},
       {:httpoison, "~> 1.8"},
