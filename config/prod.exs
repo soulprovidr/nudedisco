@@ -4,4 +4,5 @@ alias Nudedisco.Playlist
 
 config :nudedisco, Playlist,
   listmonk_list_id: 3,
-  listmonk_template_id: 1
+  listmonk_template_id: 1,
+  spotify_playlist_id: "3FxuIvXkD3JvLKstWBLfff"

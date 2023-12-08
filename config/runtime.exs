@@ -14,8 +14,6 @@ config :nudedisco, Listmonk,
 
 config :nudedisco, OpenAI, api_key: System.fetch_env!("OPENAI_API_KEY")
 
-config :nudedisco, Playlist, spotify_playlist_id: System.fetch_env!("SPOTIFY_PLAYLIST_ID")
-
 config :nudedisco, Spotify,
   client_id: System.fetch_env!("SPOTIFY_CLIENT_ID"),
   client_secret: System.fetch_env!("SPOTIFY_CLIENT_SECRET"),
