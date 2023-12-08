@@ -31,4 +31,4 @@ nudedisco-*.tar
 
 .envrc
 
-*.db
+*.db*
