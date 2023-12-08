@@ -80,7 +80,6 @@ defmodule Nudedisco.RSS.Config do
     with {:ok, body} <- Util.request(:get, feed_url) do
       items =
         xpath(body, xpath_spec, xpath_subspec)
-        |> Enum.take(10)
         |> Enum.map(&struct(RSS.Item, &1))
 
       %RSS.Feed{feed | items: items}
