@@ -3,6 +3,7 @@ defmodule Nudedisco.Application do
 
   use Application
 
+  alias Nudedisco.Repo
   alias Nudedisco.RSS
   alias Nudedisco.Scheduler
   alias Nudedisco.Spotify
@@ -12,6 +13,7 @@ defmodule Nudedisco.Application do
   def start(_type, _args) do
     Supervisor.start_link(
       [
+        {Repo, name: :repo},
         {RSS, name: :rss},
         {Spotify, name: :spotify},
         {Scheduler, name: :scheduler},

@@ -30,3 +30,5 @@ nudedisco-*.tar
 .DS_Store
 
 .envrc
+
+*.db
