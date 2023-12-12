@@ -10,5 +10,7 @@ defmodule Nudedisco.Repo.Migrations.CreateRssItems do
       add :image_url, :string
       add :feed_id, references(:rss_feeds, on_delete: :delete_all)
     end
+
+    create index(:rss_items, [:url], unique: true)
   end
 end

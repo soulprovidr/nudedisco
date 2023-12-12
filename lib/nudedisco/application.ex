@@ -13,11 +13,11 @@ defmodule Nudedisco.Application do
   def start(_type, _args) do
     Supervisor.start_link(
       [
-        {Repo, name: :repo},
-        {RSS, name: :rss},
-        {Spotify, name: :spotify},
-        {Scheduler, name: :scheduler},
-        {Web, name: :web}
+        Repo,
+        RSS,
+        Spotify,
+        Scheduler,
+        Web
       ],
       strategy: :one_for_one
     )

@@ -12,7 +12,7 @@ defmodule WebTest do
     response = HTTPoison.get!(url)
     assert response.status_code == 200
 
-    Enum.all?(feeds, fn {_k, feed} ->
+    Enum.all?(feeds, fn feed ->
       assert String.contains?(response.body, feed.name)
     end)
   end

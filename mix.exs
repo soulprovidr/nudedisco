@@ -7,7 +7,8 @@ defmodule Nudedisco.MixProject do
       version: "1.0.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases()
     ]
   end
 
@@ -16,6 +17,10 @@ defmodule Nudedisco.MixProject do
       extra_applications: [:logger],
       mod: {Nudedisco.Application, []}
     ]
+  end
+
+  defp aliases do
+    [setup: ["ecto.drop", "ecto.create", "ecto.migrate", "rss.init"]]
   end
 
   defp deps do

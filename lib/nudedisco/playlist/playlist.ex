@@ -14,6 +14,8 @@ defmodule Nudedisco.Playlist do
 
   require Logger
 
+  import Ecto.Query
+
   @type metadata :: %{album: String.t(), artist: String.t()}
   @type opts :: [notify: boolean()]
 
@@ -91,17 +93,10 @@ defmodule Nudedisco.Playlist do
     |> Enum.uniq()
   end
 
-  @spec get_feed_items() :: list(RSS.Item.t())
-  defp get_feed_items() do
+  @spec get_recent_items() :: list(RSS.Item.t())
+  defp get_recent_items() do
     cutoff_date = Timex.now() |> Timex.shift(days: -7)
-
-    is_from_past_week = fn item ->
-      Timex.after?(item.date, cutoff_date)
-    end
-
-    RSS.get_feeds()
-    |> Enum.flat_map(fn {_k, feed} -> feed.items end)
-    |> Enum.filter(is_from_past_week)
+    RSS.get_items(from(i in RSS.Item, where: i.date > ^cutoff_date))
   end
 
   @spec get_metadata(list(RSS.Item.t())) :: [metadata]
@@ -165,7 +160,7 @@ defmodule Nudedisco.Playlist do
       }
     end
 
-    get_feed_items()
+    get_recent_items()
     |> get_metadata()
     |> get_album_ids()
     |> get_albums()
