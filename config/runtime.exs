@@ -6,6 +6,7 @@ alias Nudedisco.OpenAI
 alias Nudedisco.Playlist
 alias Nudedisco.RSS
 alias Nudedisco.Spotify
+alias Nudedisco.Util
 
 config :nudedisco, Listmonk,
   api_url: System.fetch_env!("LISTMONK_API_URL"),
@@ -88,7 +89,7 @@ config :nudedisco, RSS,
         url: ~x"./link/@href"s,
         date:
           ~x"./published/text()"s
-          |> transform_by(&(Timex.parse!(&1, "{RFC3339z}") |> DateTime.shift_zone!("Etc/UTC")))
+          |> transform_by(&Util.parse_date_in_utc(&1, "{RFC3339z}"))
       ]
     }),
     RSS.Config.new(%{

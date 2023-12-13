@@ -4,8 +4,9 @@ defmodule Nudedisco.RSS.Config do
   """
   import SweetXml
 
-  alias Timex.DateTime
   alias Nudedisco.RSS
+  alias Nudedisco.Util
+  alias Timex.DateTime
 
   defstruct name: "", feed_url: "", site_url: "", slug: "", xpath_spec: nil, xpath_subspec: []
 
@@ -31,7 +32,7 @@ defmodule Nudedisco.RSS.Config do
       url: ~x"./link/text()"s,
       date:
         ~x"./pubDate/text()"s
-        |> transform_by(&(Timex.parse!(&1, "{RFC1123}") |> DateTime.shift_zone!("Etc/UTC")))
+        |> transform_by(&Util.parse_date_in_utc(&1, "{RFC1123}"))
     ]
 
   @doc """
@@ -48,7 +49,7 @@ defmodule Nudedisco.RSS.Config do
     date:
         ~x"./pubDate/text()"s
         |> transform_by(&Timex.parse!(&1, "{RFC1123}"))
-        |> transform_by(&Timex.Timezone.convert(&1, "Etc/UTC"))
+        |> transform_by(&Util.parse_date_in_utc(&1, "{RFC1123}"))
   ]
   ```
   """

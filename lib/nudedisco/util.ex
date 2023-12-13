@@ -4,6 +4,23 @@ defmodule Nudedisco.Util do
   require Logger
 
   @doc """
+  Parse a date string in the provided format and return a DateTime struct in UTC.
+  """
+  @spec parse_date_in_utc(String.t(), String.t()) :: DateTime.t()
+  def parse_date_in_utc(date, format \\ "{RFC1123}") do
+    date
+    |> Timex.parse!(format)
+    |> DateTime.shift_zone!("Etc/UTC")
+  end
+
+  @spec request(
+          :delete | :get | :head | :options | :patch | :post | :put,
+          binary(),
+          any(),
+          any(),
+          keyword()
+        ) :: :error | {:ok, any()}
+  @doc """
   Make an HTTP request. Wrapper around HTTPoison.request/4.
   """
   @spec request(:delete | :get | :head | :options | :patch | :post | :put, binary, any, any) ::
