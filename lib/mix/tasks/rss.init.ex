@@ -12,7 +12,7 @@ defmodule Mix.Tasks.Rss.Init do
 
   def run(_) do
     Ecto.Migrator.with_repo(Repo, fn repo ->
-      RSS.configs()
+      RSS.feed_configs()
       |> Enum.each(fn config ->
         repo.insert!(
           %RSS.Feed{

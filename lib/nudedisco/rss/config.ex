@@ -6,7 +6,6 @@ defmodule Nudedisco.RSS.Config do
 
   alias Nudedisco.RSS
   alias Nudedisco.Util
-  alias Timex.DateTime
 
   defstruct name: "", feed_url: "", site_url: "", slug: "", xpath_spec: nil, xpath_subspec: []
 
