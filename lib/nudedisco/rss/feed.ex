@@ -1,16 +1,23 @@
 defmodule Nudedisco.RSS.Feed do
-  @moduledoc """
-  A struct representing a hydrated RSS feed.
-  """
-  defstruct [:name, :site_url, :slug, :items]
+  use Ecto.Schema
 
-  @typedoc """
-  Elixir representation of a hydrated RSS feed.
-  """
+  alias Nudedisco.RSS
+
   @type t :: %__MODULE__{
+          __meta__: Ecto.Schema.Metadata.t(),
+          id: integer(),
           name: String.t(),
+          feed_url: String.t(),
           site_url: String.t(),
           slug: String.t(),
-          items: list(Nudedisco.RSS.Item.t()) | nil
+          items: [RSS.Item.t()]
         }
+
+  schema "rss_feeds" do
+    field(:name, :string)
+    field(:feed_url, :string)
+    field(:site_url, :string)
+    field(:slug, :string)
+    has_many(:items, RSS.Item)
+  end
 end

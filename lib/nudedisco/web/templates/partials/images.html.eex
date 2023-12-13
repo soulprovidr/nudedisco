@@ -6,7 +6,7 @@
   <div class="row">
     <%= for item <- Enum.take(feed.items, count) do %>
       <div class="item cover column <%=feed.slug %>">
-        <img src="<%= item.image %>" width="100%" />
+        <img src="<%= item.image_url %>" width="100%" />
         <h5>
           <a href="<%= item.url %>" target="_blank">
             <%= item.title %>

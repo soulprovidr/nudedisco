@@ -1,63 +1,29 @@
 defmodule Nudedisco.RSS do
-  use GenServer
-
   alias Nudedisco.RSS
+  alias Nudedisco.Repo
 
-  require Logger
+  import Ecto.Query
 
-  @type state :: %{
-          atom() => RSS.Feed.t()
-        }
-
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, [], name: __MODULE__)
+  def child_spec(opts \\ []) do
+    %{
+      id: RSS,
+      start: {RSS.Sync, :start_link, [opts]},
+      type: :worker
+    }
   end
 
-  @impl true
-  def init(_) do
-    {:noreply, state} = handle_cast(:sync, %{})
-    {:ok, state}
+  def feed_configs(), do: Application.get_env(:nudedisco, RSS) |> Keyword.get(:configs, [])
+
+  def get_feed_config(feed) do
+    feed_configs()
+    |> Enum.find(fn config -> config.slug == feed.slug end)
   end
 
-  @doc """
-  Returns a map of hydrated RSS feeds.
-  """
-  @spec get_feeds :: %{atom() => RSS.Feed.t()}
-  def get_feeds do
-    GenServer.call(__MODULE__, :get_feeds)
+  def get_feeds(query \\ from(f in RSS.Feed)) do
+    Repo.all(query) |> Repo.preload(items: from(i in RSS.Item, order_by: [desc: i.date]))
   end
 
-  @spec get_configs() :: [RSS.Config.t()]
-  defp get_configs() do
-    Application.get_env(:nudedisco, RSS)
-    |> Keyword.get(:configs, [])
-  end
-
-  @spec hydrate_feeds() :: state()
-  defp hydrate_feeds() do
-    get_configs()
-    |> Task.async_stream(&RSS.Config.hydrate/1,
-      ordered: false,
-      timeout: 30 * 1000
-    )
-    |> Enum.reject(fn {:ok, feed} -> is_nil(feed.items) end)
-    |> Enum.into(%{}, fn {:ok, feed} -> {feed.slug, feed} end)
-  end
-
-  def sync() do
-    GenServer.cast(__MODULE__, :sync)
-  end
-
-  @impl true
-  def handle_call(:get_feeds, _from, state) do
-    {:reply, state, state}
-  end
-
-  @impl true
-  def handle_cast(:sync, state) do
-    Logger.debug("[RSS] Syncing RSS feeds...")
-    new_state = Map.merge(state, hydrate_feeds())
-    Logger.debug("[RSS] Successfully synced RSS feeds.")
-    {:noreply, new_state}
+  def get_items(query \\ from(i in RSS.Item)) do
+    Repo.all(query)
   end
 end

@@ -29,7 +29,9 @@ defmodule Nudedisco.RSS.Config do
       title: ~x"./title/text()"s,
       description: ~x"./description/text()"s,
       url: ~x"./link/text()"s,
-      date: ~x"./pubDate/text()"s |> transform_by(&Timex.parse!(&1, "{RFC1123}"))
+      date:
+        ~x"./pubDate/text()"s
+        |> transform_by(&Util.parse_date_in_utc(&1, "{RFC1123}"))
     ]
 
   @doc """
@@ -43,7 +45,10 @@ defmodule Nudedisco.RSS.Config do
     title: ~x"./title/text()"s,
     description: ~x"./description/text()"s,
     url: ~x"./link/text()"s,
-    date: ~x"./pubDate/text()"s |> transform_by(&Timex.parse!(&1, "{RFC1123}"))
+    date:
+        ~x"./pubDate/text()"s
+        |> transform_by(&Timex.parse!(&1, "{RFC1123}"))
+        |> transform_by(&Util.parse_date_in_utc(&1, "{RFC1123}"))
   ]
   ```
   """
@@ -59,35 +64,5 @@ defmodule Nudedisco.RSS.Config do
       xpath_spec: xpath_spec,
       xpath_subspec: xpath_subspec
     }
-  end
-
-  @doc """
-  Hydrates and returns an RSS feed from a given RSS feed configuration.
-  """
-  @spec hydrate(RSS.Config.t()) :: RSS.Feed.t()
-  def hydrate(%RSS.Config{} = config) do
-    %{
-      name: name,
-      feed_url: feed_url,
-      site_url: site_url,
-      slug: slug,
-      xpath_spec: xpath_spec,
-      xpath_subspec: xpath_subspec
-    } = config
-
-    feed = %RSS.Feed{name: name, site_url: site_url, slug: slug, items: nil}
-
-    with {:ok, body} <- Util.request(:get, feed_url) do
-      items =
-        xpath(body, xpath_spec, xpath_subspec)
-        |> Enum.take(10)
-        |> Enum.map(&struct(RSS.Item, &1))
-
-      %RSS.Feed{feed | items: items}
-    else
-      :error ->
-        IO.warn("Error reading " <> feed_url <> ".")
-        feed
-    end
   end
 end
