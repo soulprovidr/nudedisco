@@ -22,7 +22,7 @@ config :nudedisco, Scheduler,
     ],
     rss_sync: [
       schedule: "@hourly",
-      task: {RSS, :sync, []}
+      task: {RSS.Sync, :run, []}
     ]
   ]
 
