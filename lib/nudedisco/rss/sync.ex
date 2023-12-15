@@ -42,6 +42,7 @@ defmodule Nudedisco.RSS.Sync do
     Repo.all(RSS.Feed)
     |> Task.async_stream(
       fn feed -> Repo.insert_all(RSS.Item, load_items(feed), on_conflict: :nothing) end,
+      max_concurrency: 3,
       ordered: false,
       timeout: 30 * 1000
     )
