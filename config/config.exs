@@ -11,7 +11,7 @@ config :nudedisco,
   port: 8080,
   ecto_repos: [Repo]
 
-config :nudedisco, Repo, database: "nudedisco.db"
+config :nudedisco, Repo, database: "nudedisco.db", log: false
 
 config :nudedisco, Scheduler,
   timezone: "America/Toronto",
