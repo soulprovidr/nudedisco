@@ -101,10 +101,25 @@
         </a>
       </footer>
     </div>
+
     <script type="text/javascript">
       // Prevent iframes from loading scripts.
       Array.from(window.frames).forEach((f) => f.stop());
     </script>
+
+    <script type="text/javascript">
+      // Fade in images after they load.
+      document.querySelectorAll("img.async-image").forEach((img) => {
+        if (img.complete) {
+          img.classList.add("loaded");
+        } else {
+          img.addEventListener("load", () => {
+            img.classList.add("loaded");
+          });
+        }
+      });
+    </script>
+
     <script
       defer
       data-domain="nudedis.co"
