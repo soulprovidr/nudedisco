@@ -12,6 +12,7 @@ defmodule Nudedisco.Web.Controllers.Home do
 
     response(:ok)
     |> set_header("content-type", "text/html")
+    |> set_header("content-security-policy", "frame-src 'none'")
     |> set_body(
       Web.Templates.index([
         Web.Templates.headlines_section([

@@ -103,8 +103,8 @@
     </div>
 
     <script type="text/javascript">
-      // Prevent iframes from loading scripts.
-      Array.from(window.frames).forEach((f) => f.stop());
+      // Remove iframes in feed item descriptions.
+      document.querySelectorAll("iframe").forEach((f) => f.parentNode.removeChild(f));
     </script>
 
     <script type="text/javascript">
