@@ -4,12 +4,14 @@ alias Nudedisco.Playlist
 alias Nudedisco.Repo
 alias Nudedisco.RSS
 alias Nudedisco.Scheduler
+alias Nudedisco.Spotify
 
 config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 
 config :nudedisco,
   port: 8080,
-  ecto_repos: [Repo]
+  ecto_repos: [Repo],
+  admin_email: "shola@soulprovidr.fm"
 
 config :nudedisco, Repo,
   database: "nudedisco.db",
@@ -27,6 +29,8 @@ config :nudedisco, Scheduler,
       task: {RSS.Sync, :run, []}
     ]
   ]
+
+config :nudedisco, Spotify, listmonk_authorization_template_id: 4
 
 case Config.config_env() do
   :dev ->

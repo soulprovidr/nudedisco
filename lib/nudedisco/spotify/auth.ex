@@ -9,6 +9,7 @@ defmodule Nudedisco.Spotify.Auth do
 
   use GenServer
 
+  alias Nudedisco.Listmonk
   alias Nudedisco.Spotify
   alias Nudedisco.Util
 
@@ -20,8 +21,13 @@ defmodule Nudedisco.Spotify.Auth do
           refresh_token: String.t()
         }
 
+  defp admin_email, do: Application.get_env(:nudedisco, :admin_email)
   defp client_id, do: Application.get_env(:nudedisco, Spotify)[:client_id]
   defp client_secret, do: Application.get_env(:nudedisco, Spotify)[:client_secret]
+
+  defp listmonk_authorization_template_id,
+    do: Application.get_env(:nudedisco, Spotify)[:listmonk_authorization_template_id]
+
   defp redirect_uri, do: Application.get_env(:nudedisco, Spotify)[:redirect_uri]
 
   defp headers,
@@ -139,9 +145,16 @@ defmodule Nudedisco.Spotify.Auth do
       show_dialog: "true"
     }
 
-    url = "https://accounts.spotify.com/authorize?" <> URI.encode_query(query)
+    authorization_url = "https://accounts.spotify.com/authorize?" <> URI.encode_query(query)
 
-    Logger.notice("[Spotify] Authorize at: #{url}")
+    Listmonk.send_transactional_email(
+      listmonk_authorization_template_id(),
+      data: %{"spotify_authorization_url" => authorization_url},
+      subscriber_email: admin_email()
+    )
+
+    Logger.notice("[Spotify] Authorize at: #{authorization_url}")
+
     {:noreply, state}
   end
 

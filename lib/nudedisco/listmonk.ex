@@ -86,4 +86,28 @@ defmodule Nudedisco.Listmonk do
         :error
     end
   end
+
+  @spec send_transactional_email(integer(), list()) :: :error | {:ok, any()}
+  def send_transactional_email(template_id, opts \\ []) do
+    data = Keyword.get(opts, :data)
+    subscriber_email = Keyword.get(opts, :subscriber_email)
+
+    url = "#{api_url()}/tx"
+
+    body = %{
+      data: data,
+      subscriber_email: subscriber_email,
+      template_id: template_id
+    }
+
+    with {:ok, body} when subscriber_email != nil <- Poison.encode(body),
+         {:ok, body} <- Util.request(:post, url, body, headers()) do
+      Logger.debug("[Listmonk] Successfully sent transactional email.")
+      {:ok, body}
+    else
+      _ ->
+        Logger.debug("[Listmonk] Failed to send transactional email.")
+        :error
+    end
+  end
 end
