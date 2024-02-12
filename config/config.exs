@@ -31,19 +31,19 @@ config :nudedisco, Scheduler,
 case Config.config_env() do
   :dev ->
     config :nudedisco, Playlist,
-      listmonk_list_id: 4,
-      listmonk_template_id: 1,
+      listmonk_playlist_list_id: 4,
+      listmonk_playlist_template_id: 1,
       spotify_playlist_id: "098JzO5hMPu4sfy850iJNz"
 
   :test ->
     config :nudedisco, Playlist,
-      listmonk_list_id: 4,
-      listmonk_template_id: 1,
+      listmonk_playlist_list_id: 4,
+      listmonk_playlist_template_id: 1,
       spotify_playlist_id: "098JzO5hMPu4sfy850iJNz"
 
   :prod ->
     config :nudedisco, Playlist,
-      listmonk_list_id: 3,
-      listmonk_template_id: 1,
+      listmonk_playlist_list_id: 3,
+      listmonk_playlist_template_id: 1,
       spotify_playlist_id: "3FxuIvXkD3JvLKstWBLfff"
 end

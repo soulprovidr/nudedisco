@@ -70,8 +70,8 @@ defmodule Nudedisco.Playlist.Notification do
       Listmonk.create_campaign(
         email_subject(),
         body,
-        list_id: Playlist.Constants.listmonk_list_id(),
-        template_id: Playlist.Constants.listmonk_template_id()
+        list_id: Playlist.Constants.listmonk_playlist_list_id(),
+        template_id: Playlist.Constants.listmonk_playlist_template_id()
       )
 
     with {:ok, campaign_id} <- create_campaign_result,

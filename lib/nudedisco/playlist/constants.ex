@@ -35,12 +35,13 @@ defmodule Nudedisco.Playlist.Constants do
 
   - [{'album': 'Abbey Road', 'artist': 'The Beatles'}]"
 
-  @spec listmonk_list_id() :: String.t()
-  def listmonk_list_id, do: Application.get_env(:nudedisco, Playlist)[:listmonk_list_id]
+  @spec listmonk_playlist_list_id() :: String.t()
+  def listmonk_playlist_list_id,
+    do: Application.get_env(:nudedisco, Playlist)[:listmonk_playlist_list_id]
 
-  @spec listmonk_template_id() :: String.t()
-  def listmonk_template_id,
-    do: Application.get_env(:nudedisco, Playlist)[:listmonk_template_id]
+  @spec listmonk_playlist_template_id() :: String.t()
+  def listmonk_playlist_template_id,
+    do: Application.get_env(:nudedisco, Playlist)[:listmonk_playlist_template_id]
 
   @spec spotify_playlist_id() :: String.t()
   def spotify_playlist_id, do: Application.get_env(:nudedisco, Playlist)[:spotify_playlist_id]
