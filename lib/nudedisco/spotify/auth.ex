@@ -52,6 +52,10 @@ defmodule Nudedisco.Spotify.Auth do
     {:ok, state}
   end
 
+  def authorize do
+    GenServer.cast(__MODULE__, :authorize)
+  end
+
   @spec get_access_token :: String.t() | :error
   def get_access_token do
     GenServer.call(__MODULE__, :get_access_token)
