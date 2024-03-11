@@ -32,6 +32,14 @@ defmodule Nudedisco.Spotify do
     Spotify.Util.request(:get, "https://api.spotify.com/v1/albums/#{album_id}/tracks")
   end
 
+  def get_artists(artist_ids) do
+    Spotify.Util.request(
+      :get,
+      "https://api.spotify.com/v1/artists?" <>
+        URI.encode_query(%{ids: Enum.join(artist_ids, ",")})
+    )
+  end
+
   @doc """
   Search for an item on Spotify.
   See: https://developer.spotify.com/documentation/web-api/reference/search

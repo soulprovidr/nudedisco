@@ -22,29 +22,77 @@ defmodule Nudedisco.Playlist do
   @spec create(opts()) :: {:error, String.t()} | :ok
   def create(opts \\ []) do
     case Spotify.is_authorized?() do
-      true ->
-        with {:ok, _} <- update_playlist(opts) do
-          :ok
-        end
-
       false ->
         {:error, "Not authorized to use the Spotify API."}
+
+      true ->
+        Logger.debug("[Playlist] Updating playlist...")
+
+        notify = Keyword.get(opts, :notify, false)
+        playlist_id = Playlist.Constants.spotify_playlist_id()
+
+        with rss_items <- get_rss_items(),
+             rss_items_metadata <- get_rss_items_metadata(rss_items),
+             spotify_album_ids <- get_spotify_album_ids(rss_items_metadata),
+             spotify_albums <- get_spotify_albums(spotify_album_ids),
+             playlist_items <- Enum.map(spotify_albums, &create_playlist_item/1),
+             sorted_playlist_items <- sort_by_artist_popularity(playlist_items),
+             track_uris <- Enum.map(sorted_playlist_items, & &1.track_uri),
+             {:ok, _} <- Spotify.set_playlist_tracks(playlist_id, track_uris) do
+          Logger.info("[Playlist] Successfully updated playlist.")
+
+          if notify do
+            Playlist.Notification.send(playlist_items: sorted_playlist_items)
+          end
+
+          :ok
+        else
+          _ ->
+            Logger.error("[Playlist] Failed to update playlist.")
+
+            :error
+        end
     end
   end
 
-  @spec get_albums(list(String.t())) :: list()
-  defp get_albums(album_ids) do
-    get_albums = fn album_ids ->
-      case Spotify.get_albums(album_ids) do
-        {:ok, body} -> body
-        _ -> nil
-      end
-    end
+  @spec create_playlist_item(list(String.t())) :: list()
+  defp create_playlist_item(spotify_album) do
+    random_track =
+      Map.get(spotify_album, "tracks")
+      |> Map.get("items")
+      |> Enum.random()
 
+    spotify_artist = Map.get(spotify_album, "artists", []) |> List.first()
+
+    %Playlist.Item{
+      album: Map.get(spotify_album, "name") |> sanitize(),
+      artist:
+        spotify_artist
+        |> Map.get("name")
+        |> sanitize(),
+      artist_id:
+        spotify_artist
+        |> Map.get("id"),
+      image:
+        Map.get(spotify_album, "images", [])
+        |> List.first()
+        |> Map.get("url"),
+      title: Map.get(random_track, "name") |> sanitize(),
+      track_uri: Map.get(random_track, "uri")
+    }
+  end
+
+  @spec get_spotify_albums(list(String.t())) :: list()
+  defp get_spotify_albums(album_ids) do
     album_ids
     |> Enum.chunk_every(20)
     |> Task.async_stream(
-      get_albums,
+      fn album_ids ->
+        case Spotify.get_albums(album_ids) do
+          {:ok, body} -> body
+          _ -> nil
+        end
+      end,
       ordered: false,
       timeout: 30 * 1000,
       on_timeout: :kill_task
@@ -57,8 +105,8 @@ defmodule Nudedisco.Playlist do
     end)
   end
 
-  @spec get_album_ids(list(metadata())) :: list(String.t())
-  defp get_album_ids(metadata_items) do
+  @spec get_spotify_album_ids(list(metadata())) :: list(String.t())
+  defp get_spotify_album_ids(metadata_items) do
     get_album_id = fn metadata_item ->
       %{album: album, artist: artist} = metadata_item
       q = "#{artist} #{album}"
@@ -93,14 +141,14 @@ defmodule Nudedisco.Playlist do
     |> Enum.uniq()
   end
 
-  @spec get_recent_items() :: list(RSS.Item.t())
-  defp get_recent_items() do
+  @spec get_rss_items() :: list(RSS.Item.t())
+  defp get_rss_items() do
     cutoff_date = Timex.now() |> Timex.shift(days: -7)
     RSS.get_items(from(i in RSS.Item, where: i.date > ^cutoff_date))
   end
 
-  @spec get_metadata(list(RSS.Item.t())) :: [metadata]
-  defp get_metadata(feed_items) do
+  @spec get_rss_items_metadata(list(RSS.Item.t())) :: [metadata]
+  defp get_rss_items_metadata(feed_items) do
     # Use GPT-3 to extract album names and artists from RSS feed items.
     extract_metadata = fn items ->
       messages = [
@@ -137,63 +185,21 @@ defmodule Nudedisco.Playlist do
     |> Enum.reject(has_nil_metadata_values?)
   end
 
-  defp get_playlist_items do
-    create_playlist_item = fn album ->
-      random_track =
-        Map.get(album, "tracks")
-        |> Map.get("items")
-        |> Enum.random()
-
-      %Playlist.Item{
-        album: Map.get(album, "name") |> sanitize(),
-        artist:
-          Map.get(album, "artists", [])
-          |> List.first()
-          |> Map.get("name")
-          |> sanitize(),
-        image:
-          Map.get(album, "images", [])
-          |> List.first()
-          |> Map.get("url"),
-        title: Map.get(random_track, "name") |> sanitize(),
-        track_uri: Map.get(random_track, "uri")
-      }
-    end
-
-    get_recent_items()
-    |> get_metadata()
-    |> get_album_ids()
-    |> get_albums()
-    |> Enum.map(create_playlist_item)
-  end
-
   defp sanitize(string) do
     string
     |> String.replace("\"", "'")
   end
 
-  @spec update_playlist(opts()) :: :error | {:ok, list(Playlist.Item.t())}
-  defp update_playlist(opts) do
-    Logger.debug("[Playlist] Updating playlist...")
+  defp sort_by_artist_popularity(playlist_items) do
+    {:ok, body} = Spotify.get_artists(playlist_items |> Enum.map(& &1.artist_id))
 
-    notify = Keyword.get(opts, :notify, false)
-    playlist_id = Playlist.Constants.spotify_playlist_id()
-
-    with playlist_items <- get_playlist_items(),
-         track_uris <- Enum.map(playlist_items, & &1.track_uri),
-         {:ok, _} <- Spotify.set_playlist_tracks(playlist_id, track_uris) do
-      Logger.info("[Playlist] Successfully updated playlist.")
-
-      if notify do
-        Playlist.Notification.send(playlist_items: playlist_items)
-      end
-
-      {:ok, playlist_items}
-    else
-      _ ->
-        Logger.error("[Playlist] Failed to update playlist.")
-
-        :error
+    get_artist_popularity = fn playlist_item ->
+      Map.get(body, "artists")
+      |> Enum.find(fn artist -> playlist_item.artist_id == Map.get(artist, "id") end)
+      |> Map.get("popularity", 0)
     end
+
+    playlist_items
+    |> Enum.sort(fn a, b -> get_artist_popularity.(a) > get_artist_popularity.(b) end)
   end
 end

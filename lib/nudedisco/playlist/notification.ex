@@ -8,13 +8,15 @@ defmodule Nudedisco.Playlist.Notification do
 
   @fresh_emojis ["🥝", "🍓", "🍇", "🥑", "🍒", "🍍", "🍋", "🍉", "🥭", "🫐", "🍎", "🍊"]
 
-  @spec email_subject() :: String.t()
-  defp email_subject() do
+  @spec email_subject([Playlist.Item.t()]) :: String.t()
+  defp email_subject(playlist_items) do
     date =
       DateTime.utc_now()
       |> Calendar.strftime("%m/%d")
 
-    "nudedis.co's Fresh Fridays: your #{date} playlist is live ⚡️"
+    artist_names = playlist_items |> Enum.map(& &1.artist) |> Enum.uniq() |> Enum.take(2)
+
+    "nudedis.co's Fresh Fridays (#{date}): #{Enum.join(artist_names, ", ")}, & more"
   end
 
   @spec email_body([Playlist.Item.t()]) :: String.t()
@@ -68,7 +70,7 @@ defmodule Nudedisco.Playlist.Notification do
 
     create_campaign_result =
       Listmonk.create_campaign(
-        email_subject(),
+        email_subject(playlist_items),
         body,
         list_id: Playlist.Constants.listmonk_playlist_list_id(),
         template_id: Playlist.Constants.listmonk_playlist_template_id()
