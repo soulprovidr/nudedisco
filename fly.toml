@@ -19,6 +19,7 @@ kill_timeout = "5s"
 [env]
   PORT = "8080"
   PRIMARY_REGION = "yyz"
+  ALLOW_EOL_SHIMMED_BUILDER = "1"
 
 [[services]]
   protocol = "tcp"
