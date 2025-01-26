@@ -56,7 +56,7 @@
   <body>
     <div class="container">
       <header>nudedisco</header>
-      <section class="playlist">
+      <!--<section class="playlist">
         <img
           class="icon desktop"
           height="48"
@@ -85,7 +85,7 @@
             Listen Now
           </a>
         </div>
-      </section>
+      </section>-->
 
       <%= Enum.join(sections) %>
 
