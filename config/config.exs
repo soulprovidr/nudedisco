@@ -20,10 +20,10 @@ config :nudedisco, Repo,
 config :nudedisco, Scheduler,
   timezone: "America/Toronto",
   jobs: [
-    playlist_create: [
-      schedule: "0 7 * * 5",
-      task: {Playlist, :create, [[notify: true]]}
-    ],
+    # playlist_create: [
+    #   schedule: "0 7 * * 5",
+    #   task: {Playlist, :create, [[notify: true]]}
+    # ],
     rss_sync: [
       schedule: "@hourly",
       task: {RSS.Sync, :run, []}
