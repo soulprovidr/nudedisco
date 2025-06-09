@@ -20,7 +20,7 @@ defmodule Nudedisco.MixProject do
   end
 
   defp aliases do
-    [setup: ["ecto.drop", "ecto.create", "ecto.migrate", "rss.init"]]
+    [setup: ["db.create", "db.migrate", "db.populate_feeds"]]
   end
 
   defp deps do
