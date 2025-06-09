@@ -26,7 +26,7 @@ defmodule Nudedisco.Web.Controllers.Home do
           {Map.get(feeds_by_slug, "rolling_stone"), 6},
           {Map.get(feeds_by_slug, "popmatters"), 7}
         ]),
-        Web.Templates.images_section({Map.get(feeds_by_slug, "the_needledrop"), 4}),
+        # Web.Templates.images_section({Map.get(feeds_by_slug, "the_needledrop"), 4}),
         Web.Templates.headlines_section([
           {Map.get(feeds_by_slug, "the_quietus"), 9},
           {Map.get(feeds_by_slug, "backseat_mafia"), 5},

@@ -46,13 +46,13 @@ config :nudedisco, RSS,
       site_url: "https://www.theguardian.com/music+tone/albumreview",
       slug: "the_guardian"
     }),
-    RSS.Config.new(%{
-      name: "The Needledrop",
-      feed_url: "https://www.theneedledrop.com/articles?format=rss",
-      site_url: "https://www.theneedledrop.com/articles",
-      slug: "the_needledrop",
-      xpath_subspec: [image_url: ~x"./media:content/@url"s]
-    }),
+    # RSS.Config.new(%{
+    #   name: "The Needledrop",
+    #   feed_url: "https://www.theneedledrop.com/articles?format=rss",
+    #   site_url: "https://www.theneedledrop.com/articles",
+    #   slug: "the_needledrop",
+    #   xpath_subspec: [image_url: ~x"./media:content/@url"s]
+    # }),
     RSS.Config.new(%{
       name: "NME",
       feed_url: "https://www.nme.com/reviews/album/feed",
