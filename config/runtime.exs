@@ -8,10 +8,10 @@ alias Nudedisco.RSS
 alias Nudedisco.Spotify
 alias Nudedisco.Util
 
-config :nudedisco, Listmonk,
-  api_url: System.fetch_env!("LISTMONK_API_URL"),
-  admin_user: System.fetch_env!("LISTMONK_ADMIN_USER"),
-  admin_password: System.fetch_env!("LISTMONK_ADMIN_PASSWORD")
+# config :nudedisco, Listmonk,
+#   api_url: System.fetch_env!("LISTMONK_API_URL"),
+#   admin_user: System.fetch_env!("LISTMONK_ADMIN_USER"),
+#   admin_password: System.fetch_env!("LISTMONK_ADMIN_PASSWORD")
 
 config :nudedisco, OpenAI, api_key: System.fetch_env!("OPENAI_API_KEY")
 
