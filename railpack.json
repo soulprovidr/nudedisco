@@ -1,0 +1,11 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "steps": {
+    "setup": {
+      "inputs": [
+        { "step": "build" }
+      ],
+      "commands": ["mix setup"]
+    }
+  }
+}
