@@ -32,3 +32,5 @@ nudedisco-*.tar
 .envrc
 
 *.db*
+
+mise.toml

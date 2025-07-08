@@ -28,3 +28,27 @@ RSS-powered album reviews aggregator.
     ```bash
     $ iex -S mix
     ```
+
+
+## Deployment
+
+1. Set up environment variables:
+
+    ```bash
+    $ export OPENAI_API_KEY=your_api_key_here
+    ```
+
+2. Build the release:
+
+    ```bash
+    $ MIX_ENV=prod mix release
+    ```
+
+3. Run the release:
+
+    ```bash
+    $ _build/prod/rel/nudedisco/bin/nudedisco start
+    ```
+
+The application will be available at `http://localhost:4000`.
+

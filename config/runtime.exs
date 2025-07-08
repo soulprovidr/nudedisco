@@ -46,13 +46,13 @@ config :nudedisco, RSS,
       site_url: "https://www.theguardian.com/music+tone/albumreview",
       slug: "the_guardian"
     }),
-    # RSS.Config.new(%{
-    #   name: "The Needledrop",
-    #   feed_url: "https://www.theneedledrop.com/articles?format=rss",
-    #   site_url: "https://www.theneedledrop.com/articles",
-    #   slug: "the_needledrop",
-    #   xpath_subspec: [image_url: ~x"./media:content/@url"s]
-    # }),
+    RSS.Config.new(%{
+      name: "The Needledrop",
+      feed_url: "https://theneedledrop.com/album-reviews/rss/",
+      site_url: "https://theneedledrop.com/album-reviews",
+      slug: "the_needledrop",
+      xpath_subspec: [image_url: ~x"./media:content/@url"s]
+    }),
     RSS.Config.new(%{
       name: "NME",
       feed_url: "https://www.nme.com/reviews/album/feed",
@@ -80,17 +80,9 @@ config :nudedisco, RSS,
     }),
     RSS.Config.new(%{
       name: "The Quietus",
-      feed_url: "https://thequietus.com/reviews.atom",
+      feed_url: "https://thequietus.com/columns/quietus-reviews/feed",
       site_url: "https://thequietus.com",
-      slug: "the_quietus",
-      xpath_spec: ~x"//entry"l,
-      xpath_subspec: [
-        description: ~x"./content/text()"s,
-        url: ~x"./link/@href"s,
-        date:
-          ~x"./published/text()"s
-          |> transform_by(&Util.parse_date_in_utc(&1, "{RFC3339z}"))
-      ]
+      slug: "the_quietus"
     }),
     RSS.Config.new(%{
       name: "Rolling Stone",

@@ -15,7 +15,7 @@ defmodule Nudedisco.Application do
       [
         Repo,
         RSS,
-        Spotify,
+        # Spotify,
         Scheduler,
         Web
       ],

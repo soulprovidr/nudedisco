@@ -3,7 +3,6 @@ defmodule Nudedisco.RSS.Sync do
 
   alias Nudedisco.RSS
   alias Nudedisco.Repo
-  alias Nudedisco.Util
 
   require Logger
 
@@ -20,15 +19,41 @@ defmodule Nudedisco.RSS.Sync do
   end
 
   defp load_items(feed) do
-    case Util.request(:get, feed.feed_url) do
-      {:ok, body} ->
-        %{
-          xpath_spec: xpath_spec,
-          xpath_subspec: xpath_subspec
-        } = RSS.get_feed_config(feed)
+    request = %HTTPoison.Request{
+      method: :get,
+      url: feed.feed_url,
+      options: [follow_redirect: true]
+    }
 
-        xpath(body, xpath_spec, xpath_subspec)
-        |> Enum.map(fn item -> Map.put(item, :feed_id, feed.id) end)
+    case HTTPoison.request(request) do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        try do
+          %{
+            xpath_spec: xpath_spec,
+            xpath_subspec: xpath_subspec
+          } = RSS.get_feed_config(feed)
+
+          escaped_body =
+            body
+            |> String.replace("&raquo;", "»")
+
+          xpath(escaped_body, xpath_spec, xpath_subspec)
+          |> Enum.map(fn item -> Map.put(item, :feed_id, feed.id) end)
+        rescue
+          error ->
+            Logger.error(
+              "Error parsing XML for feed #{feed.name} (#{feed.feed_url}): #{inspect(error)}"
+            )
+
+            []
+        catch
+          :exit, reason ->
+            Logger.error(
+              "XML parsing failed for feed #{feed.name} (#{feed.feed_url}): #{inspect(reason)}"
+            )
+
+            []
+        end
 
       _ ->
         Logger.error("Error reading " <> feed.feed_url <> ".")

@@ -83,7 +83,6 @@ h4 a:hover {
 }
 
 .item.cover img {
-  aspect-ratio: 1;
   border-radius: 4px;
   height: auto;
   margin-bottom: 8px;
