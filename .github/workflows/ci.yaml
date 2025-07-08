@@ -29,8 +29,8 @@ jobs:
     name: Run tests
     strategy:
       matrix:
-        otp: ['25.2']
-        elixir: ['1.14']
+        otp: ['28.0']
+        elixir: ['1.18']
 
     steps:
     - name: Set up elixir
